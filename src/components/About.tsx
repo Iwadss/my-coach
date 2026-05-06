@@ -36,7 +36,7 @@ const About = () => {
                             {/* 👇 Start Your Journey Button */}
                             <div className="mt-6">
                                 <Button
-                                    onClick={() => window.location.href = '/register'}
+                                    onClick={() => window.location.href = '/login'}
                                     className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-3 rounded-md transition-all duration-200"
                                 >
                                     Start Your Journey
