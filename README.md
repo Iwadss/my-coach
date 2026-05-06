@@ -1,69 +1,102 @@
-# React + TypeScript + Vite
+# 🏋️ MyCoach
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern fitness coaching platform built for personal trainers to manage clients, schedule sessions, and track bookings — all in one place.
 
-Currently, two official plugins are available:
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8-3178C6?logo=typescript&logoColor=white)
+![Vite](https://img.shields.io/badge/Vite-7-646CFF?logo=vite&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-Auth%20%26%20DB-3FCF8E?logo=supabase&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind%20CSS-4-06B6D4?logo=tailwindcss&logoColor=white)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **🔐 Authentication** — Secure login for admin and clients via Supabase Auth
+- **📊 Admin Dashboard** — Overview of clients, bookings, and business stats
+- **👥 Client Management** — Add, edit, and view detailed client profiles
+- **📅 Time Slot Management** — Create and manage coaching availability
+- **📋 Appointment Management** — Approve, reject, and track session bookings
+- **🎯 Client Dashboard** — Clients can book sessions and track their status
+- **🌙 Dark Mode** — Sleek dark-themed UI with blue-to-purple gradient branding
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Layer       | Technology                          |
+|-------------|-------------------------------------|
+| Frontend    | React 19, TypeScript                |
+| Build Tool  | Vite 7                              |
+| Styling     | Tailwind CSS 4, Radix UI           |
+| Backend     | Supabase (Auth, PostgreSQL, API)    |
+| Routing     | React Router DOM                    |
+| Charts      | Recharts                            |
+| Hosting     | Vercel                              |
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Prerequisites
+
+- Node.js 18+
+- npm
+- A [Supabase](https://supabase.com) project
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/Iwadss/my-coach.git
+   cd my-coach
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   VITE_ADMIN_EMAIL=your_admin_email
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+## 📁 Project Structure
+
+```
+my-coach/
+├── src/
+│   ├── components/
+│   │   ├── admin/          # Admin dashboard components
+│   │   ├── client/         # Client dashboard components
+│   │   └── ui/             # Reusable UI components (shadcn/ui)
+│   ├── pages/              # Route pages
+│   ├── supabase/           # Supabase client config
+│   ├── hooks/              # Custom React hooks
+│   └── lib/                # Utility functions
+├── public/                 # Static assets
+└── index.html              # Entry point
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 📜 Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Command          | Description              |
+|------------------|--------------------------|
+| `npm run dev`    | Start dev server         |
+| `npm run build`  | Build for production     |
+| `npm run lint`   | Run ESLint               |
+| `npm run preview`| Preview production build |
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 📄 License
+
+This project is private and proprietary.
+
+---
+
+Built with ❤️ by **Iwad**
