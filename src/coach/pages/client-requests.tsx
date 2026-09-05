@@ -15,6 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Switch } from '@/components/ui/switch'
 import { Mail, Phone, Target, CalendarCheck2, CheckCircle2, X } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
+import { DetailRow } from '@/shared/components/detail-row'
 
 interface PendingRequest {
     id: number
@@ -307,22 +308,12 @@ export default function ClientRequests() {
                                 <DetailRow icon={Phone} label="Phone" value={selected.phone ?? '—'} />
                                 <DetailRow icon={Target} label="Goal" value={selected.goal ?? '—'} capitalize />
                                 <DetailRow icon={CalendarCheck2} label="Linked since" value={selected.linkedSince ? format(parseISO(selected.linkedSince), 'd MMM yyyy') : '—'} />
-                                <DetailRow icon={CheckCircle2} label="Sessions completed" value={String(selected.completedSlots)} accent />
+                                <DetailRow icon={CheckCircle2} label="Sessions completed" value={String(selected.completedSlots)} tone="good" />
                             </div>
                         </>
                     )}
                 </DialogContent>
             </Dialog>
         </CoachShell>
-    )
-}
-
-function DetailRow({ icon: Icon, label, value, accent, capitalize }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; accent?: boolean; capitalize?: boolean }) {
-    return (
-        <div className="bg-[#141414] px-[15px] py-3.5 flex items-center gap-3">
-            <Icon className="w-4 h-4 text-white/35 flex-none" />
-            <span className="text-[11.5px] text-white/50">{label}</span>
-            <span className={`ml-auto font-medium text-[12.5px] ${accent ? 'text-[#ccff00]' : ''} ${capitalize ? 'capitalize' : ''}`}>{value}</span>
-        </div>
     )
 }

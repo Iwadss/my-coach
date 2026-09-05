@@ -9,6 +9,7 @@ import { GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { Ban, RotateCcw, Mail, Phone, User, Award, DollarSign, CalendarCheck2, CreditCard, Users } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { DetailRow } from '@/shared/components/detail-row'
 
 type CoachAppStatus = 'pending' | 'approved' | 'rejected' | 'suspended'
 type Filter = 'All' | 'Active' | 'Needs attention'
@@ -284,22 +285,22 @@ export default function AdminCoaches() {
                             ) : (
                                 <div className="flex flex-col gap-3.5">
                                     <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
-                                        <DetailRow icon={Mail} label="Email" value={detail.email} />
-                                        <DetailRow icon={Phone} label="Phone" value={detail.phone ?? '—'} />
-                                        <DetailRow icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
-                                        <DetailRow icon={Award} label="Specialty" value={detail.specialty ?? '—'} />
-                                        <DetailRow icon={DollarSign} label="Hourly rate" value={detail.hourlyRate != null ? `RM${detail.hourlyRate}` : 'Not set'} />
-                                        <DetailRow icon={CalendarCheck2} label="Applied" value={formatDate(detail.appliedAt, { day: 'numeric', month: 'short', year: 'numeric' })} />
-                                        <DetailRow icon={CalendarCheck2} label="Reviewed" value={detail.reviewedAt ? formatDate(detail.reviewedAt, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
-                                        {detail.rejectionReason && <DetailRow icon={Ban} label="Rejection reason" value={detail.rejectionReason} accent />}
+                                        <DetailRow align="right" icon={Mail} label="Email" value={detail.email} />
+                                        <DetailRow align="right" icon={Phone} label="Phone" value={detail.phone ?? '—'} />
+                                        <DetailRow align="right" icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
+                                        <DetailRow align="right" icon={Award} label="Specialty" value={detail.specialty ?? '—'} />
+                                        <DetailRow align="right" icon={DollarSign} label="Hourly rate" value={detail.hourlyRate != null ? `RM${detail.hourlyRate}` : 'Not set'} />
+                                        <DetailRow align="right" icon={CalendarCheck2} label="Applied" value={formatDate(detail.appliedAt, { day: 'numeric', month: 'short', year: 'numeric' })} />
+                                        <DetailRow align="right" icon={CalendarCheck2} label="Reviewed" value={detail.reviewedAt ? formatDate(detail.reviewedAt, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
+                                        {detail.rejectionReason && <DetailRow align="right" icon={Ban} label="Rejection reason" value={detail.rejectionReason} tone="bad" />}
                                     </div>
 
                                     <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
-                                        <DetailRow icon={CreditCard} label="Subscription" value={detail.billing ? (detail.billing.subscriptionStatus === 'active' ? 'Active' : 'Inactive') : '—'} />
-                                        <DetailRow icon={CalendarCheck2} label="Expiry" value={detail.billing?.subscriptionExpiry ? formatDate(detail.billing.subscriptionExpiry, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
-                                        <DetailRow icon={CalendarCheck2} label="Last payment" value={detail.billing?.lastPaymentAt ? formatDate(detail.billing.lastPaymentAt, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Never'} />
+                                        <DetailRow align="right" icon={CreditCard} label="Subscription" value={detail.billing ? (detail.billing.subscriptionStatus === 'active' ? 'Active' : 'Inactive') : '—'} />
+                                        <DetailRow align="right" icon={CalendarCheck2} label="Expiry" value={detail.billing?.subscriptionExpiry ? formatDate(detail.billing.subscriptionExpiry, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
+                                        <DetailRow align="right" icon={CalendarCheck2} label="Last payment" value={detail.billing?.lastPaymentAt ? formatDate(detail.billing.lastPaymentAt, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Never'} />
                                         {detail.billing?.accessOverride !== 'none' && (
-                                            <DetailRow icon={Ban} label="Billing override" value={`${detail.billing?.accessOverride}${detail.billing?.overrideReason ? ` — ${detail.billing.overrideReason}` : ''}`} accent />
+                                            <DetailRow align="right" icon={Ban} label="Billing override" value={`${detail.billing?.accessOverride}${detail.billing?.overrideReason ? ` — ${detail.billing.overrideReason}` : ''}`} tone="bad" />
                                         )}
                                     </div>
 
@@ -355,12 +356,3 @@ export default function AdminCoaches() {
     )
 }
 
-function DetailRow({ icon: Icon, label, value, accent, capitalize }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; accent?: boolean; capitalize?: boolean }) {
-    return (
-        <div className="bg-[#141414] px-[15px] py-3.5 flex items-center gap-3">
-            <Icon className="w-4 h-4 text-white/35 flex-none" />
-            <span className="text-[11.5px] text-white/50">{label}</span>
-            <span className={`ml-auto font-medium text-[12.5px] text-right ${accent ? 'text-[#ff6b52]' : ''} ${capitalize ? 'capitalize' : ''}`}>{value}</span>
-        </div>
-    )
-}

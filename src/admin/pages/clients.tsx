@@ -9,6 +9,7 @@ import { GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { Mail, Phone, Target, User, Ruler, Weight, CalendarCheck2, CheckCircle2, Coins, UserCog } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import { DetailRow } from '@/shared/components/detail-row'
 
 type Filter = 'All' | 'Active' | 'Unlinked'
 type Tone = 'good' | 'bad' | 'neutral'
@@ -268,15 +269,15 @@ export default function AdminClients() {
                             ) : (
                                 <div className="flex flex-col gap-3.5">
                                     <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
-                                        <DetailRow icon={Mail} label="Email" value={detail.email} />
-                                        <DetailRow icon={Phone} label="Phone" value={detail.phone ?? '—'} />
-                                        <DetailRow icon={Target} label="Goal" value={goalLabel(detail.goal)} />
-                                        <DetailRow icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
-                                        <DetailRow icon={Ruler} label="Height" value={detail.heightCm != null ? `${detail.heightCm} cm` : '—'} />
-                                        <DetailRow icon={Weight} label="Weight" value={detail.weightKg != null ? `${detail.weightKg} kg` : '—'} />
-                                        <DetailRow icon={CalendarCheck2} label="Joined" value={formatDate(detail.joined, { day: 'numeric', month: 'short', year: 'numeric' })} />
-                                        <DetailRow icon={CheckCircle2} label="Sessions completed" value={String(detail.completedSlots ?? 0)} accentGood />
-                                        <DetailRow icon={Coins} label="Token balance" value={`${detail.tokenBalance ?? 0} (${detail.tokensIssued ?? 0} issued total)`} accentGood={!!detail.tokenBalance} />
+                                        <DetailRow align="right" icon={Mail} label="Email" value={detail.email} />
+                                        <DetailRow align="right" icon={Phone} label="Phone" value={detail.phone ?? '—'} />
+                                        <DetailRow align="right" icon={Target} label="Goal" value={goalLabel(detail.goal)} />
+                                        <DetailRow align="right" icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
+                                        <DetailRow align="right" icon={Ruler} label="Height" value={detail.heightCm != null ? `${detail.heightCm} cm` : '—'} />
+                                        <DetailRow align="right" icon={Weight} label="Weight" value={detail.weightKg != null ? `${detail.weightKg} kg` : '—'} />
+                                        <DetailRow align="right" icon={CalendarCheck2} label="Joined" value={formatDate(detail.joined, { day: 'numeric', month: 'short', year: 'numeric' })} />
+                                        <DetailRow align="right" icon={CheckCircle2} label="Sessions completed" value={String(detail.completedSlots ?? 0)} tone="good" />
+                                        <DetailRow align="right" icon={Coins} label="Token balance" value={`${detail.tokenBalance ?? 0} (${detail.tokensIssued ?? 0} issued total)`} tone={detail.tokenBalance ? 'good' : 'default'} />
                                     </div>
 
                                     <div className="bg-[#141414] border border-[#1f1f1f] rounded-[14px] px-[15px] py-3.5">
@@ -306,16 +307,6 @@ export default function AdminClients() {
                     )}
                 </DialogContent>
             </Dialog>
-        </div>
-    )
-}
-
-function DetailRow({ icon: Icon, label, value, accentGood, capitalize }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; accentGood?: boolean; capitalize?: boolean }) {
-    return (
-        <div className="bg-[#141414] px-[15px] py-3.5 flex items-center gap-3">
-            <Icon className="w-4 h-4 text-white/35 flex-none" />
-            <span className="text-[11.5px] text-white/50">{label}</span>
-            <span className={`ml-auto font-medium text-[12.5px] text-right ${accentGood ? 'text-[#ccff00]' : ''} ${capitalize ? 'capitalize' : ''}`}>{value}</span>
         </div>
     )
 }

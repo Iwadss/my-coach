@@ -14,6 +14,7 @@ import CoachShell, { initials } from '@/coach/components/coach-shell'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { Search, Mail, Phone, Target, CalendarCheck2, CheckCircle2, Coins, X } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
+import { DetailRow } from '@/shared/components/detail-row'
 
 interface ClientRow {
     clientId: string
@@ -217,8 +218,8 @@ export default function ClientManagement() {
                                 <DetailRow icon={Phone} label="Phone" value={selected.phone ?? '—'} />
                                 <DetailRow icon={Target} label="Goal" value={selected.goal ?? '—'} capitalize />
                                 <DetailRow icon={CalendarCheck2} label="Linked since" value={selected.linkedSince ? format(parseISO(selected.linkedSince), 'd MMM yyyy') : '—'} />
-                                <DetailRow icon={CheckCircle2} label="Sessions completed" value={String(selected.completedSlots)} accent />
-                                <DetailRow icon={Coins} label="Token balance" value={String(selected.tokenBalance)} accent={selected.tokenBalance > 0} />
+                                <DetailRow icon={CheckCircle2} label="Sessions completed" value={String(selected.completedSlots)} tone="good" />
+                                <DetailRow icon={Coins} label="Token balance" value={String(selected.tokenBalance)} tone={selected.tokenBalance > 0 ? 'good' : 'default'} />
                             </div>
 
                             <DialogFooter className="gap-2">
@@ -293,12 +294,3 @@ export default function ClientManagement() {
     )
 }
 
-function DetailRow({ icon: Icon, label, value, accent, capitalize }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string; accent?: boolean; capitalize?: boolean }) {
-    return (
-        <div className="bg-[#141414] px-[15px] py-3.5 flex items-center gap-3">
-            <Icon className="w-4 h-4 text-white/35 flex-none" />
-            <span className="text-[11.5px] text-white/50">{label}</span>
-            <span className={`ml-auto font-medium text-[12.5px] ${accent ? 'text-[#ccff00]' : ''} ${capitalize ? 'capitalize' : ''}`}>{value}</span>
-        </div>
-    )
-}

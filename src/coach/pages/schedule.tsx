@@ -14,6 +14,7 @@ import HoursManager from '@/coach/components/hours-manager'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from '@/components/ui/drawer'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { ChevronLeft, ChevronRight, X, User, Clock, Dumbbell } from 'lucide-react'
+import { DetailRow } from '@/shared/components/detail-row'
 
 interface Slot {
     id: number
@@ -437,12 +438,3 @@ function StatusCountRow({ label, value, dotColor }: { label: string; value: numb
     )
 }
 
-function DetailRow({ icon: Icon, label, value }: { icon: React.ComponentType<{ className?: string }>; label: string; value: string }) {
-    return (
-        <div className="bg-[#141414] px-[15px] py-3.5 flex items-center gap-3">
-            <Icon className="w-4 h-4 text-white/35 flex-none" />
-            <span className="text-[11.5px] text-white/50">{label}</span>
-            <span className="ml-auto font-medium text-[12.5px]">{value}</span>
-        </div>
-    )
-}
