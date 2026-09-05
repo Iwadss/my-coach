@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import supabase from '@/supabase/supabase';
 import { Eye, EyeOff, Check, ArrowLeft } from 'lucide-react';
-import ImageCoverflow from '@/components/ImageCoverflow';
+import ImageCoverflow from '@/auth/components/image-coverflow';
 import { Spinner } from '@/components/ui/spinner';
 
 export default function LoginPage() {

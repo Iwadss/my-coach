@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Mail, MailCheck, ArrowLeft } from 'lucide-react'
-import ImageCoverflow from '@/components/ImageCoverflow'
+import ImageCoverflow from '@/auth/components/image-coverflow'
 import { Spinner } from '@/components/ui/spinner'
 
 export default function ForgotPassword() {

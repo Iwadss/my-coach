@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff, IdCard, CheckCircle2, XCircle, ArrowLeft } from 'lucide-react'
-import QuoteStack from '@/components/QuoteStack'
+import QuoteStack from '@/auth/components/quote-stack'
 import { Spinner } from '@/components/ui/spinner'
 
 interface ResolvedCoach {

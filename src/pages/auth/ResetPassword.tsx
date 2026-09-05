@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
 import { Eye, EyeOff, KeyRound, Link2Off, ArrowLeft } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
-import ImageCoverflow from '@/components/ImageCoverflow'
+import ImageCoverflow from '@/auth/components/image-coverflow'
 
 export default function ResetPassword() {
     // Supabase sets the recovery session from the URL fragment asynchronously

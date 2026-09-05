@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 
-import Index from "./pages/Index";
+import Home from "@/marketing/pages/home";
 import Login from "./pages/auth/Login";
 import SignUp from "./pages/auth/SignUp";
 import CoachSignUp from "./pages/auth/CoachSignUp";
@@ -43,7 +43,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           {/* Public routes */}
-          <Route path="/" element={<Index />} />
+          <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/coach-signup" element={<CoachSignUp />} />
