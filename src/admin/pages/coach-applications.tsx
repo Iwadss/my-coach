@@ -4,6 +4,7 @@ import supabase from '@/supabase/supabase'
 import { useAdmin } from '@/admin/components/admin-context'
 import AdminPageHeader from '@/admin/components/admin-page-header'
 import { EmptyState, SectionToolbar, formatDate, initials } from '@/components/shared/ui'
+import { useAdminExport } from '@/admin/components/use-admin-export'
 import { ArrowUpDown } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -17,7 +18,7 @@ interface Application {
 }
 
 export default function AdminCoachApplications() {
-    const { query, showFlash, refreshStats, setExportHandler } = useAdmin()
+    const { query, showFlash, refreshStats } = useAdmin()
     const [apps, setApps] = useState<Application[]>([])
     const [loading, setLoading] = useState(true)
     const [selectedId, setSelectedId] = useState<string | null>(null)
@@ -53,13 +54,7 @@ export default function AdminCoachApplications() {
         return rows
     }, [apps, query, sort])
 
-    useEffect(() => {
-        setExportHandler(() => ({
-            rows: visible.map((a) => ({ name: a.name, email: a.email, phone: a.phone ?? '', submitted: a.applied_at })),
-            filename: 'coach-applications.csv',
-        }))
-        return () => setExportHandler(null)
-    }, [visible, setExportHandler])
+    useAdminExport(visible, (a) => ({ name: a.name, email: a.email, phone: a.phone ?? '', submitted: a.applied_at }), 'coach-applications.csv')
 
     const sel = visible.find((a) => a.id === selectedId) ?? visible[0] ?? null
 

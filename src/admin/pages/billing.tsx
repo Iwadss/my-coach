@@ -6,6 +6,7 @@ import AdminPageHeader from '@/admin/components/admin-page-header'
 import DataTable, { type DataTableColumn } from '@/components/shared/data-table'
 import { StatTile } from '@/components/shared/page-header'
 import { initials } from '@/components/shared/ui'
+import { useAdminExport } from '@/admin/components/use-admin-export'
 import { SUBSCRIPTION_PRICE, SUBSCRIPTION_PRICE_CURRENCY, GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { Spinner } from '@/components/ui/spinner'
 
@@ -44,7 +45,7 @@ interface TransactionRow {
 }
 
 export default function AdminBilling() {
-    const { query, setExportHandler } = useAdmin()
+    const { query } = useAdmin()
     const [billing, setBilling] = useState<CoachBillingRow[]>([])
     const [transactions, setTransactions] = useState<TransactionRow[]>([])
     const [loading, setLoading] = useState(true)
@@ -105,16 +106,10 @@ export default function AdminBilling() {
         return transactions.filter((t) => [t.name, t.email, t.coachCode].filter(Boolean).join(' ').toLowerCase().includes(q))
     }, [transactions, query])
 
-    useEffect(() => {
-        setExportHandler(() => ({
-            rows: visibleTransactions.map((t) => ({
-                coach_id: t.coachCode ?? '', coach: t.name, email: t.email,
-                amount: t.amount, currency: t.currency, date: t.createdAt,
-            })),
-            filename: 'payment-history.csv',
-        }))
-        return () => setExportHandler(null)
-    }, [visibleTransactions, setExportHandler])
+    useAdminExport(visibleTransactions, (t) => ({
+        coach_id: t.coachCode ?? '', coach: t.name, email: t.email,
+        amount: t.amount, currency: t.currency, date: t.createdAt,
+    }), 'payment-history.csv')
 
     const columns: DataTableColumn<TransactionRow>[] = [
         {

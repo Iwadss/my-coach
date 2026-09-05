@@ -10,6 +10,7 @@ import { Ban, RotateCcw, Mail, Phone, User, Award, DollarSign, CalendarCheck2, C
 import { Spinner } from '@/components/ui/spinner'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DetailRow } from '@/shared/components/detail-row'
+import { useAdminExport } from '@/admin/components/use-admin-export'
 
 type CoachAppStatus = 'pending' | 'approved' | 'rejected' | 'suspended'
 type Filter = 'All' | 'Active' | 'Needs attention'
@@ -75,7 +76,7 @@ function deriveStatus(c: { status: CoachAppStatus; billing: Billing | null }): {
 }
 
 export default function AdminCoaches() {
-    const { query, refreshStats, setExportHandler } = useAdmin()
+    const { query, refreshStats } = useAdmin()
     const [coaches, setCoaches] = useState<CoachRow[]>([])
     const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState<Filter>('All')
@@ -145,16 +146,10 @@ export default function AdminCoaches() {
         })
     }, [coaches, query, filter])
 
-    useEffect(() => {
-        setExportHandler(() => ({
-            rows: visible.map((c) => ({
-                coach_id: c.coachCode ?? '', name: c.name, email: c.email, clients: c.clients,
-                status: deriveStatus(c).label, joined: c.joined,
-            })),
-            filename: 'coaches.csv',
-        }))
-        return () => setExportHandler(null)
-    }, [visible, setExportHandler])
+    useAdminExport(visible, (c) => ({
+        coach_id: c.coachCode ?? '', name: c.name, email: c.email, clients: c.clients,
+        status: deriveStatus(c).label, joined: c.joined,
+    }), 'coaches.csv')
 
     const openDetail = async (row: CoachRow) => {
         setDetail({ ...row, phone: null, bio: null, gender: null, specialty: null, hourlyRate: null, acceptingClients: true, appliedAt: row.joined, reviewedAt: null, rejectionReason: null, linkedClients: [] })
