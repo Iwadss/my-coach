@@ -4,12 +4,12 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 
 import Home from "@/marketing/pages/home";
-import Login from "./pages/auth/Login";
-import SignUp from "./pages/auth/SignUp";
-import CoachSignUp from "./pages/auth/CoachSignUp";
-import ForgotPassword from "./pages/auth/ForgotPassword";
-import ResetPassword from "./pages/auth/ResetPassword";
-import PendingApproval from "./pages/auth/PendingApproval";
+import Login from "@/auth/pages/login";
+import SignUp from "@/auth/pages/sign-up";
+import CoachSignUp from "@/auth/pages/coach-sign-up";
+import ForgotPassword from "@/auth/pages/forgot-password";
+import ResetPassword from "@/auth/pages/reset-password";
+import PendingApproval from "@/auth/pages/pending-approval";
 import CoachDashboard from "./pages/coach/CoachDashboard";
 import CoachSchedule from "./pages/coach/CoachSchedule";
 import CoachEarnings from "./pages/coach/CoachEarnings";

@@ -6,12 +6,22 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
-import { Eye, EyeOff, ArrowLeft, Clock, Check } from 'lucide-react'
+import { Eye, EyeOff, Clock, Check } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
+import { AuthLogoLockup, AuthMobileBackBar } from '@/auth/components/auth-layout'
+import { authLabelCls, authInputCls } from '@/auth/styles/form'
 
 // Light/dark, matching the login/signup screens' palette (see Login.tsx /
 // SignUp.tsx) — previously dark-only, now brought in line with the rest of
 // the auth flow.
+//
+// Deliberately NOT built on <AuthLayout>, unlike the other 4 auth pages —
+// its hero panel has a different internal rhythm (top-anchored logo + tag,
+// an `mt-auto`-pinned headline, extra stat/journey blocks below) rather
+// than the centered-content pattern AuthLayout assumes, and it has a third
+// "submitted" screen state the others don't. It does share the two pieces
+// that genuinely are identical everywhere: the form field styles and the
+// logo/mobile-back-bar primitives (as their `compact`/`tag` variants).
 
 const journeySteps = [
     { n: 1, label: 'Submit this application' },
@@ -32,6 +42,10 @@ const reviewSteps = [
 ]
 
 const BIO_MAX = 240
+
+const forCoachesTag = (
+    <span className="font-['JetBrains_Mono'] text-[10px] font-medium tracking-[1.4px] uppercase text-[#6f8c00] dark:text-[#ccff00]">For coaches</span>
+)
 
 export default function CoachSignUp() {
     const [fullName, setFullName] = useState('')
@@ -138,9 +152,6 @@ export default function CoachSignUp() {
         setSubmitted(true)
     }
 
-    const labelCls = 'font-[\'JetBrains_Mono\'] text-[10px] font-medium uppercase tracking-[1.4px] text-[#14140f]/50 dark:text-white/42'
-    const inputCls = 'h-[52px] rounded-xl border border-[#d8d8cd] dark:border-[#2a2a2a] bg-white dark:bg-[#1a1a1a] px-[18px] text-[15px] text-[#14140f] dark:text-white placeholder:text-[#14140f]/35 dark:placeholder:text-white/35 focus-visible:ring-[#ccff00]/40 focus-visible:border-[#a8cf00] dark:focus-visible:border-[#ccff00]'
-
     // 7c — mobile "Application submitted (pending approval)" screen, shown
     // right after a successful submit. Returning to /pending-approval later
     // (a fresh session) still goes through that page's own status check —
@@ -192,13 +203,8 @@ export default function CoachSignUp() {
                 <div className="absolute left-[-160px] bottom-[-160px] w-[440px] h-[440px] rounded-full bg-[#ccff00] opacity-30 dark:opacity-[0.08] blur-[10px]" />
 
                 <div className="relative flex items-center justify-between">
-                    <Link to="/" className="inline-flex items-center gap-[11px]">
-                        <span className="w-[26px] h-[26px] rounded-lg bg-[#ccff00] flex items-center justify-center">
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0a0a0a" strokeWidth="2.4" strokeLinecap="square" strokeLinejoin="miter"><path d="M2 20h6v-6h6V8h6V2" /></svg>
-                        </span>
-                        <span className="font-['JetBrains_Mono'] text-xs font-medium tracking-[2px] uppercase text-[#14140f] dark:text-white">MyCoach</span>
-                    </Link>
-                    <span className="font-['JetBrains_Mono'] text-[10px] font-medium tracking-[1.3px] uppercase text-[#6f8c00] dark:text-[#ccff00]">For coaches</span>
+                    <AuthLogoLockup compact />
+                    {forCoachesTag}
                 </div>
 
                 <div className="relative mt-auto font-['Anton'] text-[60px] leading-[0.94] tracking-wide uppercase text-[#14140f] dark:text-white">
@@ -233,17 +239,7 @@ export default function CoachSignUp() {
             {/* Form panel */}
             <div className="flex flex-col justify-center px-6 sm:px-10 lg:px-[52px] py-10 lg:border-l border-[#e2e2d9] dark:border-[#1c1c1c]">
                 <div className="w-full max-w-sm mx-auto">
-                    {/* Mobile-only top bar */}
-                    <div className="lg:hidden flex items-center justify-between mb-5">
-                        <button
-                            onClick={() => navigate('/')}
-                            aria-label="Back to home"
-                            className="w-10 h-10 rounded-[13px] bg-white dark:bg-[#1a1a1a] border border-[#d8d8cd] dark:border-[#2a2a2a] flex items-center justify-center text-[#14140f] dark:text-white hover:border-[#a8cf00] dark:hover:border-[#ccff00] hover:text-[#6f8c00] dark:hover:text-[#ccff00] transition-colors"
-                        >
-                            <ArrowLeft className="w-[17px] h-[17px]" />
-                        </button>
-                        <span className="font-['JetBrains_Mono'] text-[10px] font-medium tracking-[1.4px] uppercase text-[#6f8c00] dark:text-[#ccff00]">For coaches</span>
-                    </div>
+                    <AuthMobileBackBar to="/" label="Back to home" tag={forCoachesTag} />
 
                     <h1 className="font-['Anton'] text-[28px] lg:text-[34px] leading-none tracking-wide uppercase text-[#14140f] dark:text-white">
                         Register as coach
@@ -255,46 +251,46 @@ export default function CoachSignUp() {
 
                     <form onSubmit={(e) => { e.preventDefault(); handleApply() }} className="mt-6 flex flex-col gap-3.5">
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="fullName" className={labelCls}>Full name</Label>
+                            <Label htmlFor="fullName" className={authLabelCls}>Full name</Label>
                             <Input
                                 id="fullName"
                                 value={fullName}
                                 onChange={(e) => { setFullName(e.target.value); if (errors.fullName) setErrors(p => ({ ...p, fullName: '' })) }}
                                 placeholder="Full name"
-                                className={`${inputCls} ${errors.fullName ? 'border-destructive' : ''}`}
+                                className={`${authInputCls} ${errors.fullName ? 'border-destructive' : ''}`}
                             />
                             {errors.fullName && <p className="text-sm text-destructive">{errors.fullName}</p>}
                         </div>
 
                         <div className="grid sm:grid-cols-[1.15fr_.85fr] gap-3">
                             <div className="flex flex-col gap-2">
-                                <Label htmlFor="email" className={labelCls}>Email address</Label>
+                                <Label htmlFor="email" className={authLabelCls}>Email address</Label>
                                 <Input
                                     id="email"
                                     type="email"
                                     value={email}
                                     onChange={(e) => { setEmail(e.target.value); if (errors.email) setErrors(p => ({ ...p, email: '' })) }}
                                     placeholder="Email address"
-                                    className={`${inputCls} ${errors.email ? 'border-destructive' : ''}`}
+                                    className={`${authInputCls} ${errors.email ? 'border-destructive' : ''}`}
                                 />
                                 {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
                             </div>
                             <div className="flex flex-col gap-2">
-                                <Label htmlFor="phone" className={labelCls}>Phone</Label>
+                                <Label htmlFor="phone" className={authLabelCls}>Phone</Label>
                                 <Input
                                     id="phone"
                                     type="tel"
                                     value={phone}
                                     onChange={(e) => setPhone(e.target.value)}
                                     placeholder="Phone number"
-                                    className={inputCls}
+                                    className={authInputCls}
                                 />
                             </div>
                         </div>
 
                         <div className="flex flex-col gap-2">
                             <div className="flex items-baseline justify-between">
-                                <Label htmlFor="bio" className={labelCls}>Short bio</Label>
+                                <Label htmlFor="bio" className={authLabelCls}>Short bio</Label>
                                 <span className="font-['JetBrains_Mono'] text-[10px] text-[#14140f]/35 dark:text-white/35">{bio.length} / {BIO_MAX}</span>
                             </div>
                             <Textarea
@@ -308,7 +304,7 @@ export default function CoachSignUp() {
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <Label htmlFor="password" className={labelCls}>Password</Label>
+                            <Label htmlFor="password" className={authLabelCls}>Password</Label>
                             <div className="relative flex items-center">
                                 <Input
                                     id="password"
@@ -316,7 +312,7 @@ export default function CoachSignUp() {
                                     value={password}
                                     onChange={(e) => { setPassword(e.target.value); if (errors.password) setErrors(p => ({ ...p, password: '' })) }}
                                     placeholder="8+ characters"
-                                    className={`${inputCls} pr-12 w-full ${errors.password ? 'border-destructive' : ''}`}
+                                    className={`${authInputCls} pr-12 w-full ${errors.password ? 'border-destructive' : ''}`}
                                 />
                                 <Button
                                     type="button"
