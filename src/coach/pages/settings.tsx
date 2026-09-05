@@ -12,7 +12,7 @@ import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
 import CoachShell from '@/coach/components/coach-shell'
 import { useCoachBillingGuard } from '@/coach/hooks/use-coach-billing-guard'
-import { payWithStripe, GRACE_PERIOD_DAYS, SUBSCRIPTION_PRICE_LABEL } from '@/lib/billing'
+import { payWithStripe, GRACE_PERIOD_DAYS, SUBSCRIPTION_PRICE_LABEL } from '@/shared/lib/billing'
 import { Eye, EyeOff, Copy, Pencil, CreditCard } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import {

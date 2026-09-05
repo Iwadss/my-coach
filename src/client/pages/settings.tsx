@@ -10,7 +10,7 @@ import { changeCoach } from '@/shared/lib/coach-clients'
 import { Eye, EyeOff, Pencil, Sun, Moon, Monitor } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Slider } from '@/components/ui/slider'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme } from '@/app/theme-provider'
 import {
     Dialog,
     DialogClose,

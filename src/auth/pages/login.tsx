@@ -1,4 +1,4 @@
-// src/pages/auth/Login.tsx
+// src/auth/pages/login.tsx
 
 import { useState } from 'react';
 import { Link } from 'react-router-dom';

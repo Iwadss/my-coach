@@ -6,7 +6,7 @@ import AdminPageHeader from '@/admin/components/admin-page-header'
 import DataTable, { type DataTableColumn } from '@/components/shared/data-table'
 import { StatTile } from '@/components/shared/page-header'
 import { initials } from '@/components/shared/ui'
-import { SUBSCRIPTION_PRICE, SUBSCRIPTION_PRICE_CURRENCY, GRACE_PERIOD_DAYS } from '@/lib/billing'
+import { SUBSCRIPTION_PRICE, SUBSCRIPTION_PRICE_CURRENCY, GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { Spinner } from '@/components/ui/spinner'
 
 // Pure financial dashboard — billing is 100% Stripe-automated as of the

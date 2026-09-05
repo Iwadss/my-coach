@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Menu, X, ArrowUpRight, Play, Moon, Sun } from 'lucide-react'
-import { useTheme } from '@/components/theme-provider'
+import { useTheme } from '@/app/theme-provider'
 
 const navLinks = [
     { href: '#mc-how', label: 'How it works' },

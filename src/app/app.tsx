@@ -1,7 +1,7 @@
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme-provider";
+import { ThemeProvider } from "@/app/theme-provider";
 
 import Home from "@/marketing/pages/home";
 import Login from "@/auth/pages/login";
@@ -18,7 +18,7 @@ import ClientBook from "@/client/pages/book";
 import ClientSessions from "@/client/pages/sessions";
 import ClientProgress from "@/client/pages/progress";
 import ClientSettings from "@/client/pages/settings";
-import NotFound from "./pages/NotFound";
+import NotFound from "./pages/not-found";
 
 // Route protection components
 import ClientRoute from "@/auth/guards/client-route";

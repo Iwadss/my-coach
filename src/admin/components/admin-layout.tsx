@@ -1,4 +1,4 @@
-// src/components/admin/admin-layout.tsx
+// src/admin/components/admin-layout.tsx
 //
 // Sidebar is built on the shadcn Sidebar primitive (@/components/ui/sidebar)
 // — Header/Footer stay pinned, SidebarContent scrolls independently —
@@ -12,8 +12,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import { LOGO_SRC } from '@/lib/brand'
-import { GRACE_PERIOD_DAYS } from '@/lib/billing'
+import { LOGO_SRC } from '@/shared/lib/brand'
+import { GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { AdminContext, type AdminStats, type ExportHandler } from './admin-context'
 import { downloadCsv, initials } from '@/components/shared/ui'
 import {

@@ -7,7 +7,7 @@
 // shows — see useCoachBillingGuard for the exact 'grace' condition.
 import { useState } from 'react'
 import { toast } from 'sonner'
-import { payWithStripe, GRACE_PERIOD_DAYS } from '@/lib/billing'
+import { payWithStripe, GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { useCoachBillingGuard } from '@/coach/hooks/use-coach-billing-guard'
 import { AlertTriangle, CreditCard } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'

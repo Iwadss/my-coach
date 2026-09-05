@@ -23,7 +23,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { payWithStripe, SUBSCRIPTION_PRICE_LABEL } from '@/lib/billing'
+import { payWithStripe, SUBSCRIPTION_PRICE_LABEL } from '@/shared/lib/billing'
 import { useCoachBillingGuard } from '@/coach/hooks/use-coach-billing-guard'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Lock, Ban, CreditCard } from 'lucide-react'
