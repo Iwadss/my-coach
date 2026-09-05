@@ -1,7 +1,7 @@
-// src/components/coach/coach-settings.tsx
+// src/coach/pages/settings.tsx
 //
 // Layout and component language kept in lockstep with
-// src/pages/client/ClientSettings.tsx: same card background/border/radius/
+// src/client/pages/settings.tsx: same card background/border/radius/
 // padding, same input/button classes, same view-card-plus-edit-dialog
 // pattern for the profile section. The one deliberate difference is color
 // tokens — this page has no `dark:` variants because coach-shell.tsx is
@@ -10,8 +10,8 @@
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import CoachShell from '@/components/coach/coach-shell'
-import { useCoachBillingGuard } from '@/hooks/use-coach-billing-guard'
+import CoachShell from '@/coach/components/coach-shell'
+import { useCoachBillingGuard } from '@/coach/hooks/use-coach-billing-guard'
 import { payWithStripe, GRACE_PERIOD_DAYS, SUBSCRIPTION_PRICE_LABEL } from '@/lib/billing'
 import { Eye, EyeOff, Copy, Pencil, CreditCard } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
@@ -62,8 +62,8 @@ export default function CoachSettings() {
 
     // Profile card is view-only; Edit opens this modal on a draft copy of
     // the fields above. Nothing is written until "Save changes" — Cancel
-    // (or closing the dialog) just discards the draft. Matches
-    // ClientSettings.tsx's "Your details" edit flow exactly.
+    // (or closing the dialog) just discards the draft. Matches the client
+    // portal's settings.tsx "Your details" edit flow exactly.
     const [editOpen, setEditOpen] = useState(false)
     const [draft, setDraft] = useState<Draft | null>(null)
 
@@ -284,7 +284,7 @@ export default function CoachSettings() {
             )}
 
             {/* Edit-profile modal — operates on a draft, only committed on Save.
-                Same chrome as ClientSettings.tsx's "Edit your details" dialog. */}
+                Same chrome as the client portal's settings.tsx "Edit your details" dialog. */}
             <Dialog open={editOpen} onOpenChange={setEditOpen}>
                 <DialogContent className="!bg-[#111] !border-[#1f1f1f] !text-white sm:!max-w-lg max-h-[85vh] overflow-y-auto">
                     <DialogHeader>

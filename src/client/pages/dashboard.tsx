@@ -1,4 +1,4 @@
-//src/pages/client/ClientDashboard.tsx
+// src/client/pages/dashboard.tsx
 // "Today" tab — home screen of the MyCoach Client design.
 //
 // Deliberately kept to what's actually actionable: a status summary, what's
@@ -13,7 +13,7 @@ import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { format, startOfWeek, endOfWeek, parseISO } from 'date-fns'
 import supabase from '@/supabase/supabase'
-import ClientShell from '@/components/client/client-shell'
+import ClientShell from '@/client/components/client-shell'
 import { StatusPill } from '@/components/shared/ui'
 
 interface Totals {

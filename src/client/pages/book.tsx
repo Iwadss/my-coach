@@ -1,4 +1,4 @@
-// src/pages/client/ClientBook.tsx
+// src/client/pages/book.tsx
 // "Book a session" tab — day + time picker wired to timeslots/coach_day_off,
 // same overlap-avoidance approach as the booking flow it replaces: this is a
 // best-effort UI hint (RLS only lets a client see their own bookings, not
@@ -14,7 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { format, addDays, parseISO, differenceInCalendarDays } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import ClientShell from '@/components/client/client-shell'
+import ClientShell from '@/client/components/client-shell'
 import { ChevronLeft, ChevronRight, Dumbbell, Flame, PersonStanding, Move } from 'lucide-react'
 
 const WEEKS_AHEAD = 4 // how far into the future a client can book

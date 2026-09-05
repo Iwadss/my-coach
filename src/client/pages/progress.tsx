@@ -1,4 +1,4 @@
-// src/pages/client/ClientProgress.tsx
+// src/client/pages/progress.tsx
 // "Progress" tab — sessions-logged chart and streak, both derived from real
 // completed bookings (same query, two views of one dataset — not a
 // duplication of each other).
@@ -14,7 +14,7 @@
 import * as React from 'react'
 import { format, startOfWeek, subWeeks } from 'date-fns'
 import supabase from '@/supabase/supabase'
-import ClientShell from '@/components/client/client-shell'
+import ClientShell from '@/client/components/client-shell'
 
 interface WeekBucket {
     label: string

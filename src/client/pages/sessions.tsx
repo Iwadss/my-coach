@@ -1,11 +1,11 @@
-// src/pages/client/ClientSessions.tsx
+// src/client/pages/sessions.tsx
 // "My sessions" tab — upcoming/past toggle over the client's own bookings.
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import ClientShell from '@/components/client/client-shell'
+import ClientShell from '@/client/components/client-shell'
 import {
     AlertDialog,
     AlertDialogAction,

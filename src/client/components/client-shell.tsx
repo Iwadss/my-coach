@@ -1,4 +1,4 @@
-// src/components/client/client-shell.tsx
+// src/client/components/client-shell.tsx
 //
 // Shared chrome for every client page (sidebar + top bar + page header),
 // ported from the "MyCoach Client" design. Deliberately fixed-dark (not
@@ -24,7 +24,7 @@ import supabase from '@/supabase/supabase'
 import { LOGO_SRC } from '@/lib/brand'
 import { initials } from '@/components/shared/ui'
 import PageHeader from '@/components/shared/page-header'
-import ClientAuthGuard from '@/components/client/client-auth-guard'
+import ClientAuthGuard from '@/client/components/client-auth-guard'
 import {
     Home,
     CalendarPlus,
@@ -50,14 +50,14 @@ import {
 } from '@/components/ui/sidebar'
 
 // Re-exported (imported above) so existing `import ClientShell, { initials }
-// from '@/components/client/client-shell'` call sites keep working — the
+// from '@/client/components/client-shell'` call sites keep working — the
 // one definition now lives in shared/ui.tsx (also used by coach-shell.tsx
 // and the admin section).
 export { initials }
 
 // 'settings' has no nav entry below — that page is reached by clicking the
 // profile card in the sidebar footer (see SelfCard) — but stays a valid Tab
-// so ClientSettings.tsx can still pass active="settings" (a no-op now, since
+// so settings.tsx can still pass active="settings" (a no-op now, since
 // no nav item matches it, which is correct: nothing in the list should
 // highlight while on that page).
 type Tab = 'home' | 'book' | 'sessions' | 'progress' | 'settings'

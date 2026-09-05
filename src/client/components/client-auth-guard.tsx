@@ -1,18 +1,18 @@
-// src/components/client/client-auth-guard.tsx
+// src/client/components/client-auth-guard.tsx
 //
 // Global "your coach isn't available" gate for the client portal — mounted
 // once inside ClientShell.tsx, so every client page gets it automatically.
 // Checks the LINKED COACH's status (billing access + not suspended) via
 // client_coach_access_ok(), not the client's own account — the client's own
 // access is already gated by ProtectedRoute (requires an approved
-// coach_clients row). Same light/dark-aware palette as ClientSettings.tsx's
+// coach_clients row). Same light/dark-aware palette as settings.tsx's
 // own "Change coach" dialog, whose exact unlink-and-request flow this reuses
-// via lib/coach-clients.ts.
+// via shared/lib/coach-clients.ts.
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import { changeCoach } from '@/lib/coach-clients'
-import CoachPicker from '@/components/auth/coach-picker'
+import { changeCoach } from '@/shared/lib/coach-clients'
+import CoachPicker from '@/shared/components/coach-picker'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { UserX } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'

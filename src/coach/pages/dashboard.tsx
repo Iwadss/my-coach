@@ -1,11 +1,11 @@
-// src/pages/coach/CoachDashboard.tsx
+// src/coach/pages/dashboard.tsx
 // "Today" tab — home screen of the MyCoach Coach design.
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { format, parseISO, startOfWeek, endOfWeek, startOfMonth, formatDistanceToNow } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import CoachShell, { initials } from '@/components/coach/coach-shell'
+import CoachShell, { initials } from '@/coach/components/coach-shell'
 
 // Today's Sessions only ever shows Approved (status 'confirmed') bookings
 // now — no per-row status pill needed, since every row on screen is the

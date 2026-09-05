@@ -1,4 +1,4 @@
-// src/components/coach/coach-subscription-banner.tsx
+// src/coach/components/coach-subscription-banner.tsx
 //
 // Persistent "you're in the grace period" warning — rendered inside
 // CoachShell's main column (not by CoachAuthGuard, which wraps the whole
@@ -8,7 +8,7 @@
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { payWithStripe, GRACE_PERIOD_DAYS } from '@/lib/billing'
-import { useCoachBillingGuard } from '@/hooks/use-coach-billing-guard'
+import { useCoachBillingGuard } from '@/coach/hooks/use-coach-billing-guard'
 import { AlertTriangle, CreditCard } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 

@@ -1,12 +1,12 @@
-// src/pages/client/ClientSettings.tsx
+// src/client/pages/settings.tsx
 import * as React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import ClientShell, { initials } from '@/components/client/client-shell'
-import CoachPicker from '@/components/auth/coach-picker'
-import { changeCoach } from '@/lib/coach-clients'
+import ClientShell, { initials } from '@/client/components/client-shell'
+import CoachPicker from '@/shared/components/coach-picker'
+import { changeCoach } from '@/shared/lib/coach-clients'
 import { Eye, EyeOff, Pencil, Sun, Moon, Monitor } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 import { Slider } from '@/components/ui/slider'
@@ -207,9 +207,9 @@ export default function ClientSettings() {
     }
 
     // Ends the current approved link and files a pending request with the
-    // new coach — the same mechanism SignUp.tsx uses, just re-entered from
+    // new coach — the same mechanism sign-up.tsx uses, just re-entered from
     // Settings. Also the mechanism ClientAuthGuard's "Change Coach" button
-    // uses when the linked coach is expired/suspended — see lib/coach-clients.ts.
+    // uses when the linked coach is expired/suspended — see shared/lib/coach-clients.ts.
     const handleChangeCoach = async () => {
         if (!newCoachId) return
         setChangingCoach(true)

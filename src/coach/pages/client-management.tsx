@@ -1,4 +1,4 @@
-// src/components/coach/client-management.tsx
+// src/coach/pages/client-management.tsx
 // "Clients" full roster — reached via "See all clients" on client-requests.tsx,
 // which only shows a top-5-by-sessions preview. Same dark card language as
 // the rest of the coach area (bg-[#111]/border-[#1f1f1f] cards, the same
@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react'
 import { format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import CoachShell, { initials } from '@/components/coach/coach-shell'
+import CoachShell, { initials } from '@/coach/components/coach-shell'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { Search, Mail, Phone, Target, CalendarCheck2, CheckCircle2, Coins, X } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'

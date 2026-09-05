@@ -1,4 +1,4 @@
-// src/pages/coach/CoachSchedule.tsx
+// src/coach/pages/schedule.tsx
 // "Schedule" tab — a read-only week view of real availability + bookings,
 // filtered to the hours the coach has actually turned on. Editing opens the
 // same HoursManager used at /time-slots-management, in a Drawer. Clicking a
@@ -9,8 +9,8 @@ import * as React from 'react'
 import { format, addWeeks, startOfWeek, addDays } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import CoachShell from '@/components/coach/coach-shell'
-import HoursManager from '@/components/coach/hours-manager'
+import CoachShell from '@/coach/components/coach-shell'
+import HoursManager from '@/coach/components/hours-manager'
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerClose } from '@/components/ui/drawer'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { ChevronLeft, ChevronRight, X, User, Clock, Dumbbell } from 'lucide-react'

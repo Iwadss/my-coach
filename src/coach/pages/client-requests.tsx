@@ -1,4 +1,4 @@
-// src/components/coach/client-requests.tsx
+// src/coach/pages/client-requests.tsx
 // "Requests" tab — clients who entered this coach's ID and are waiting on
 // approve/decline, plus the roster of clients already linked to this coach
 // (click a name to see their detail). The design's "reschedule requests"
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { formatDistanceToNow, format, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import CoachShell, { initials } from '@/components/coach/coach-shell'
+import CoachShell, { initials } from '@/coach/components/coach-shell'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Switch } from '@/components/ui/switch'
 import { Mail, Phone, Target, CalendarCheck2, CheckCircle2, X } from 'lucide-react'

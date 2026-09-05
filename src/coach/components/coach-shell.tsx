@@ -1,4 +1,4 @@
-// src/components/coach/coach-shell.tsx
+// src/coach/components/coach-shell.tsx
 //
 // Shared chrome for every coach page (sidebar + top bar + page header),
 // ported from the "MyCoach Coach" design — same fixed-dark treatment and
@@ -11,7 +11,7 @@
 //
 // Sidebar is built on the shadcn Sidebar primitive (@/components/ui/sidebar)
 // — Header/Footer stay pinned, SidebarContent scrolls independently —
-// matching src/components/client/client-shell.tsx, rather than the previous
+// matching src/client/components/client-shell.tsx, rather than the previous
 // hand-rolled div (which used `lg:static`, so on desktop it sat in normal
 // document flow and scrolled away with the page instead of staying pinned).
 // The brand colors are fixed-dark here (not theme-aware, unlike the client
@@ -27,8 +27,8 @@ import supabase from '@/supabase/supabase'
 import { LOGO_SRC } from '@/lib/brand'
 import { initials } from '@/components/shared/ui'
 import PageHeader from '@/components/shared/page-header'
-import CoachAuthGuard from '@/components/coach/coach-auth-guard'
-import CoachSubscriptionBanner from '@/components/coach/coach-subscription-banner'
+import CoachAuthGuard from '@/coach/components/coach-auth-guard'
+import CoachSubscriptionBanner from '@/coach/components/coach-subscription-banner'
 import {
     Home,
     CalendarRange,
@@ -55,7 +55,7 @@ import {
 } from '@/components/ui/sidebar'
 
 // Re-exported (imported above) so existing `import CoachShell, { initials }
-// from '@/components/coach/coach-shell'` call sites keep working — the one
+// from '@/coach/components/coach-shell'` call sites keep working — the one
 // definition now lives in shared/ui.tsx (also used by client-shell.tsx and
 // the admin section).
 export { initials }

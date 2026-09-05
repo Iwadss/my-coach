@@ -1,4 +1,4 @@
-// src/components/coach/hours-manager.tsx
+// src/coach/components/hours-manager.tsx
 //
 // The coach's hours-management surface: reused both inline on
 // /time-slots-management and inside the Drawer opened from the Schedule

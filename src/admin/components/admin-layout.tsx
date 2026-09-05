@@ -2,7 +2,7 @@
 //
 // Sidebar is built on the shadcn Sidebar primitive (@/components/ui/sidebar)
 // — Header/Footer stay pinned, SidebarContent scrolls independently —
-// matching src/components/client/client-shell.tsx and coach-shell.tsx,
+// matching src/client/components/client-shell.tsx and coach-shell.tsx,
 // rather than the previous hand-rolled div (which used `lg:static`, so on
 // desktop it sat in normal document flow and scrolled away with the page
 // instead of staying pinned). Fixed-dark theming (not tied to the app's

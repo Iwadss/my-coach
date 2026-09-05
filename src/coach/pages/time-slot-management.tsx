@@ -1,9 +1,9 @@
-// src/components/coach/time-slot-management.tsx
+// src/coach/pages/time-slot-management.tsx
 // Full-page version of hours management (the Schedule tab also opens the
 // same HoursManager in a Drawer) — kept as its own route since the old
 // coach nav still links here directly.
-import CoachShell from '@/components/coach/coach-shell'
-import HoursManager from '@/components/coach/hours-manager'
+import CoachShell from '@/coach/components/coach-shell'
+import HoursManager from '@/coach/components/hours-manager'
 
 export default function TimeSlots() {
     return (

@@ -1,4 +1,4 @@
-// src/pages/coach/CoachEarnings.tsx
+// src/coach/pages/earnings.tsx
 // "Earnings" tab — built around the token system: there's still no online
 // payment collection (same honest call the old version of this page made),
 // but tokens themselves are a real, persisted record of what a coach has
@@ -10,7 +10,7 @@
 import * as React from 'react'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import CoachShell from '@/components/coach/coach-shell'
+import CoachShell from '@/coach/components/coach-shell'
 import { Coins } from 'lucide-react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose } from '@/components/ui/dialog'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'

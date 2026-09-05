@@ -1,4 +1,4 @@
-// src/components/coach/coach-auth-guard.tsx
+// src/coach/components/coach-auth-guard.tsx
 //
 // Global payment gate for the coach portal — mounted once inside
 // CoachShell.tsx (not per-page), so every coach page gets it automatically.
@@ -24,7 +24,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { payWithStripe, SUBSCRIPTION_PRICE_LABEL } from '@/lib/billing'
-import { useCoachBillingGuard } from '@/hooks/use-coach-billing-guard'
+import { useCoachBillingGuard } from '@/coach/hooks/use-coach-billing-guard'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { Lock, Ban, CreditCard } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'

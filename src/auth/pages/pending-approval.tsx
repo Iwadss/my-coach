@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import CoachPicker from '@/components/auth/coach-picker'
+import CoachPicker from '@/shared/components/coach-picker'
 import { Clock, XCircle, Ban, LogOut } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 
