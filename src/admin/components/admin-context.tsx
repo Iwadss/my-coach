@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react'
-import type { ExportRow } from '@/components/shared/ui'
+import type { ExportRow } from '@/shared/lib/csv'
 
 export type { ExportRow }
 

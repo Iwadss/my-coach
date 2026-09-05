@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Spinner } from '@/components/ui/spinner'
-import { EmptyState, tableWrap, th, td, trHover } from '@/components/shared/ui'
+import { EmptyState } from '@/shared/components/empty-state'
 
 // Generic, column-driven table — same visual language as the raw
 // <table>/th/td markup every admin page (AdminBilling, AdminCoaches,
@@ -9,6 +9,14 @@ import { EmptyState, tableWrap, th, td, trHover } from '@/components/shared/ui'
 // any row shape without the table needing to know about coaches, clients,
 // or billing specifically — Coach/Client pages that outgrow a card grid
 // can drop this in too.
+//
+// The class-string constants below used to live in shared/ui.tsx as public
+// exports, but this was their only real consumer — moved here as private
+// implementation detail now that nothing else needs them.
+const tableWrap = 'bg-[#111] border border-[#1f1f1f] rounded-[18px] overflow-x-auto'
+const th = "text-left px-[18px] py-[13px] font-medium text-[9.5px] tracking-[1.3px] uppercase text-white/40 border-b border-[#1f1f1f] whitespace-nowrap font-['JetBrains_Mono']"
+const td = 'px-[18px] py-[14px] align-top'
+const trHover = 'border-b border-[#1a1a1a] last:border-0 hover:bg-white/[.025] transition-colors'
 
 export interface DataTableColumn<T> {
     key: string

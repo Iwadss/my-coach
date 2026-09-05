@@ -15,7 +15,8 @@ import supabase from '@/supabase/supabase'
 import { LOGO_SRC } from '@/shared/lib/brand'
 import { GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { AdminContext, type AdminStats, type ExportHandler } from './admin-context'
-import { downloadCsv, initials } from '@/components/shared/ui'
+import { downloadCsv } from '@/shared/lib/csv'
+import { initials } from '@/shared/lib/format'
 import {
     ClipboardList,
     UserCog,

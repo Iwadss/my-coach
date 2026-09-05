@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import { format, startOfWeek, endOfWeek, parseISO } from 'date-fns'
 import supabase from '@/supabase/supabase'
 import ClientShell from '@/client/components/client-shell'
-import { StatusPill } from '@/components/shared/ui'
+import { StatusPill } from '@/shared/components/status-pill'
 
 interface Totals {
     completed_slots: number

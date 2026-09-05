@@ -25,7 +25,7 @@ import { format } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
 import { LOGO_SRC } from '@/shared/lib/brand'
-import { initials } from '@/components/shared/ui'
+import { initials } from '@/shared/lib/format'
 import PageHeader from '@/components/shared/page-header'
 import CoachAuthGuard from '@/coach/components/coach-auth-guard'
 import CoachSubscriptionBanner from '@/coach/components/coach-subscription-banner'
@@ -55,8 +55,8 @@ import {
 
 // Re-exported (imported above) so existing `import CoachShell, { initials }
 // from '@/coach/components/coach-shell'` call sites keep working — the one
-// definition now lives in shared/ui.tsx (also used by client-shell.tsx and
-// the admin section).
+// definition now lives in shared/lib/format.ts (also used by
+// client-shell.tsx and the admin section).
 export { initials }
 
 // 'settings' has no nav entry below — that page is reached by clicking the

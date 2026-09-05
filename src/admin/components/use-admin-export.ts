@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useAdmin } from './admin-context'
-import type { ExportRow } from '@/components/shared/ui'
+import type { ExportRow } from '@/shared/lib/csv'
 
 // Registers this page's current rows as the CSV the toolbar's "Export CSV"
 // button downloads, and clears it again on unmount or when the rows change.

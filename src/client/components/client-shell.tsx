@@ -22,7 +22,7 @@ import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import supabase from '@/supabase/supabase'
 import { LOGO_SRC } from '@/shared/lib/brand'
-import { initials } from '@/components/shared/ui'
+import { initials } from '@/shared/lib/format'
 import PageHeader from '@/components/shared/page-header'
 import ClientAuthGuard from '@/client/components/client-auth-guard'
 import { PortalNavItem } from '@/shared/components/portal-nav-item'
@@ -50,8 +50,8 @@ import {
 
 // Re-exported (imported above) so existing `import ClientShell, { initials }
 // from '@/client/components/client-shell'` call sites keep working — the
-// one definition now lives in shared/ui.tsx (also used by coach-shell.tsx
-// and the admin section).
+// one definition now lives in shared/lib/format.ts (also used by
+// coach-shell.tsx and the admin section).
 export { initials }
 
 // 'settings' has no nav entry below — that page is reached by clicking the

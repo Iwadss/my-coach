@@ -1,5 +1,5 @@
 import { useSidebar } from '@/components/ui/sidebar'
-import { initials } from '@/components/shared/ui'
+import { initials } from '@/shared/lib/format'
 
 interface PortalSelfCardProps {
     /** null while the profile is still loading — shows a placeholder avatar/name. */
