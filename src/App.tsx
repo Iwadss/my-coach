@@ -30,11 +30,11 @@ import RegisterClient from "./components/coach/client-registration";
 import ClientRequests from "./components/coach/client-requests";
 import CoachSettings from "./components/coach/coach-settings";
 
-import AdminLayout from "./components/admin/admin-layout";
-import AdminCoachApplications from "./pages/admin/AdminCoachApplications";
-import AdminCoaches from "./pages/admin/AdminCoaches";
-import AdminClients from "./pages/admin/AdminClients";
-import AdminBilling from "./pages/admin/AdminBilling";
+import AdminLayout from "@/admin/components/admin-layout";
+import AdminCoachApplications from "@/admin/pages/coach-applications";
+import AdminCoaches from "@/admin/pages/coaches";
+import AdminClients from "@/admin/pages/clients";
+import AdminBilling from "@/admin/pages/billing";
 
 const App = () => (
   <TooltipProvider>

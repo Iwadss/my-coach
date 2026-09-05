@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
-import { useAdmin } from '@/components/admin/admin-context'
-import AdminPageHeader from '@/components/admin/admin-page-header'
-import { EmptyState, SectionToolbar, formatDate, initials } from '@/components/admin/admin-ui'
+import { useAdmin } from '@/admin/components/admin-context'
+import AdminPageHeader from '@/admin/components/admin-page-header'
+import { EmptyState, SectionToolbar, formatDate, initials } from '@/components/shared/ui'
 import { ArrowUpDown } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
 
