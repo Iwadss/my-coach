@@ -9,45 +9,73 @@
   font-weight: 400;
 
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --radius: 0.625rem;
+
+  /* Structural surfaces stay neutral (0 chroma) — legibility of body text
+     and card content is the priority, so these are unchanged from the
+     shadcn default. Only the brand/status/chrome tokens below carry hue. */
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+
+  /* Brand primary — indigo/violet, matching the gradient identity already
+     used ad hoc across the app ("MyCoach" wordmark, primary CTAs). This is
+     the one token every restyle in later phases should reach for instead
+     of a raw violet-600/blue-600 utility. */
+  --primary: oklch(0.556 0.245 293);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+
+  /* Secondary/muted/accent/border/input carry a faint brand tint (very low
+     chroma) instead of pure gray — gives the chrome a designed, cohesive
+     feel without competing with content. */
+  --secondary: oklch(0.965 0.015 293);
+  --secondary-foreground: oklch(0.25 0.03 293);
+  --muted: oklch(0.97 0.008 293);
+  --muted-foreground: oklch(0.5 0.02 293);
+  --accent: oklch(0.955 0.02 293);
+  --accent-foreground: oklch(0.3 0.05 293);
+  --border: oklch(0.9 0.01 293);
+  --input: oklch(0.9 0.01 293);
+  --ring: oklch(0.606 0.25 293);
+
+  /* Status vocabulary — one token per semantic meaning, used everywhere a
+     page currently picks its own emerald/amber/blue/rose shade. */
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.6 0.15 149);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.795 0.161 85);
+  --warning-foreground: oklch(0.28 0.07 70);
+  --info: oklch(0.55 0.19 255);
+  --info-foreground: oklch(0.985 0 0);
+
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
+
+  --sidebar: oklch(0.975 0.006 293);
   --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary: oklch(0.556 0.245 293);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-accent: oklch(0.955 0.02 293);
+  --sidebar-accent-foreground: oklch(0.3 0.05 293);
+  --sidebar-border: oklch(0.9 0.01 293);
+  --sidebar-ring: oklch(0.606 0.25 293);
+
+  /* Full-page gradient shell used by auth/onboarding screens. */
+  --auth-shell-from: oklch(0.97 0.02 255);
+  --auth-shell-via: oklch(0.97 0.02 293);
+  --auth-shell-to: oklch(0.97 0.03 310);
 }
 
 @theme inline {
@@ -70,6 +98,13 @@
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
@@ -95,31 +130,47 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
+
+  --primary: oklch(0.66 0.21 293);
+  --primary-foreground: oklch(0.985 0 0);
+
+  --secondary: oklch(0.269 0.015 293);
+  --secondary-foreground: oklch(0.9 0.01 293);
+  --muted: oklch(0.269 0.012 293);
+  --muted-foreground: oklch(0.708 0.015 293);
+  --accent: oklch(0.269 0.02 293);
+  --accent-foreground: oklch(0.985 0.01 293);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --ring: oklch(0.66 0.21 293);
+
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.985 0 0);
+  --success: oklch(0.66 0.16 149);
+  --success-foreground: oklch(0.985 0 0);
+  --warning: oklch(0.72 0.17 80);
+  --warning-foreground: oklch(0.18 0.03 70);
+  --info: oklch(0.65 0.18 255);
+  --info-foreground: oklch(0.985 0 0);
+
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
+
+  --sidebar: oklch(0.205 0.008 293);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary: oklch(0.66 0.21 293);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0.02 293);
+  --sidebar-accent-foreground: oklch(0.985 0.01 293);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-ring: oklch(0.66 0.21 293);
+
+  --auth-shell-from: oklch(0.19 0.012 293);
+  --auth-shell-via: oklch(0.16 0.008 293);
+  --auth-shell-to: oklch(0.19 0.012 293);
 }
 
 @layer base {
@@ -127,59 +178,97 @@
     @apply border-border outline-ring/50;
   }
 
+  html,
   body {
     @apply bg-background text-foreground;
   }
 }
 
-/* Custom Toast Styles */
+/* Shared design-system utilities — reused across auth/onboarding pages and
+   every nav header, instead of each page re-declaring the same gradient/
+   blur/shadow combination inline. */
+@layer components {
+  .brand-wordmark {
+    background-image: linear-gradient(to right, var(--info), var(--primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .auth-shell {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background-image: linear-gradient(
+      to bottom right,
+      var(--auth-shell-from),
+      var(--auth-shell-via),
+      var(--auth-shell-to)
+    );
+  }
+
+  .glass-card {
+    border-radius: var(--radius-xl);
+    border-width: 0;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background-color: color-mix(in oklch, var(--card) 90%, transparent);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  }
+}
+
+/* Toast styles — one CSS custom property per semantic meaning instead of a
+   hardcoded hex per toast variant, so these always track the design
+   system's status colors. */
 @layer components {
   .toast-success {
-    background: #10b981 !important;
-    color: white !important;
-    border: 1px solid #059669 !important;
+    background: var(--success) !important;
+    color: var(--success-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--success) 80%, black) !important;
     font-weight: 500;
   }
 
   .toast-error {
-    background: #ef4444 !important;
-    color: white !important;
-    border: 1px solid #dc2626 !important;
+    background: var(--destructive) !important;
+    color: var(--destructive-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--destructive) 80%, black) !important;
     font-weight: 500;
   }
 
   .toast-warning {
-    background: #fbbf24 !important;
-    color: white !important;
-    border: 1px solid #f59e0b !important;
+    background: var(--warning) !important;
+    color: var(--warning-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--warning) 75%, black) !important;
     font-weight: 500;
   }
 
   .toast-info {
-    background: #3b82f6 !important;
-    color: white !important;
-    border: 1px solid #2563eb !important;
+    background: var(--info) !important;
+    color: var(--info-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--info) 80%, black) !important;
     font-weight: 500;
   }
 
   .toast-delete {
-    background: #dc2626 !important;
-    color: white !important;
-    border: 1px solid #b91c1c !important;
+    background: var(--destructive) !important;
+    color: var(--destructive-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--destructive) 70%, black) !important;
     font-weight: 500;
   }
 
   .toast-available {
-    background: #10b981 !important;
-    color: white !important;
-    border: 1px solid #059669 !important;
+    background: var(--success) !important;
+    color: var(--success-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--success) 80%, black) !important;
     font-weight: 500;
   }
 
   .toast-unavailable {
-    background: #f59e0b !important;
-    color: white !important;
-    border: 1px solid #d97706 !important;
+    background: var(--warning) !important;
+    color: var(--warning-foreground) !important;
+    border: 1px solid color-mix(in oklch, var(--warning) 70%, black) !important;
     font-weight: 500;
   }
 }

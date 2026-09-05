@@ -10,8 +10,8 @@ A modern fitness coaching platform built for personal trainers to manage clients
 
 ## ✨ Features
 
-- **🔐 Authentication** — Secure login for admin and clients via Supabase Auth
-- **📊 Admin Dashboard** — Overview of clients, bookings, and business stats
+- **🔐 Authentication** — Secure login for coach and clients via Supabase Auth
+- **📊 Coach Dashboard** — Overview of clients, bookings, and business stats
 - **👥 Client Management** — Add, edit, and view detailed client profiles
 - **📅 Time Slot Management** — Create and manage coaching availability
 - **📋 Appointment Management** — Approve, reject, and track session bookings
@@ -57,8 +57,10 @@ A modern fitness coaching platform built for personal trainers to manage clients
    ```env
    VITE_SUPABASE_URL=your_supabase_url
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-   VITE_ADMIN_EMAIL=your_admin_email
    ```
+
+   Roles (admin/coach/client) are stored in the database now, not an env
+   var — see `supabase/migrations/` for how a coach or admin gets promoted.
 
 4. **Start the development server**
    ```bash
@@ -73,7 +75,7 @@ A modern fitness coaching platform built for personal trainers to manage clients
 my-coach/
 ├── src/
 │   ├── components/
-│   │   ├── admin/          # Admin dashboard components
+│   │   ├── coach/          # Coach dashboard components
 │   │   ├── client/         # Client dashboard components
 │   │   └── ui/             # Reusable UI components (shadcn/ui)
 │   ├── pages/              # Route pages
