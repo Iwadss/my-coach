@@ -8,9 +8,10 @@ import { EmptyState, FilterBar, FilterChip, SectionToolbar, StatusPill, formatDa
 import { GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { Mail, Phone, Target, User, Ruler, Weight, CalendarCheck2, CheckCircle2, Coins, UserCog } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DetailRow } from '@/shared/components/detail-row'
 import { useAdminExport } from '@/admin/components/use-admin-export'
+import { useDetailLoader } from '@/admin/components/use-detail-loader'
+import { DetailDialogShell } from '@/admin/components/detail-dialog-shell'
 
 type Filter = 'All' | 'Active' | 'Unlinked'
 type Tone = 'good' | 'bad' | 'neutral'
@@ -91,8 +92,7 @@ export default function AdminClients() {
     const [loading, setLoading] = useState(true)
     const [filter, setFilter] = useState<Filter>('All')
 
-    const [detail, setDetail] = useState<ClientDetail | null>(null)
-    const [detailLoading, setDetailLoading] = useState(false)
+    const { detail, setDetail, detailLoading, openDetail } = useDetailLoader<ClientRow, ClientDetail>()
 
     useEffect(() => {
         const load = async () => {
@@ -166,32 +166,31 @@ export default function AdminClients() {
         programme: goalLabel(c.goal), joined: c.joined, last_session: c.lastSession ?? 'Never', status: deriveClientStatus(c.coach).label,
     }), 'clients.csv')
 
-    const openDetail = async (row: ClientRow) => {
-        setDetail({ ...row, phone: null, gender: null, heightCm: null, weightKg: null, tokenBalance: null, tokensIssued: null, completedSlots: null })
-        setDetailLoading(true)
+    const handleOpenDetail = (row: ClientRow) => openDetail(
+        row,
+        { phone: null, gender: null, heightCm: null, weightKg: null, tokenBalance: null, tokensIssued: null, completedSlots: null },
+        async () => {
+            const [{ data: clientFull, error }, { data: totals }] = await Promise.all([
+                supabase.from('clients').select('phone, gender, height_cm, weight_kg, token_balance, tokens_issued_total').eq('id', row.id).maybeSingle(),
+                supabase.from('client_booking_totals').select('completed_slots').eq('client_id', row.id).maybeSingle(),
+            ])
 
-        const [{ data: clientFull, error }, { data: totals }] = await Promise.all([
-            supabase.from('clients').select('phone, gender, height_cm, weight_kg, token_balance, tokens_issued_total').eq('id', row.id).maybeSingle(),
-            supabase.from('client_booking_totals').select('completed_slots').eq('client_id', row.id).maybeSingle(),
-        ])
+            if (error || !clientFull) {
+                toast.error('❌ Could not load client details', { description: error?.message, className: 'toast-error' })
+                return null
+            }
 
-        setDetailLoading(false)
-        if (error || !clientFull) {
-            toast.error('❌ Could not load client details', { description: error?.message, className: 'toast-error' })
-            return
+            return {
+                phone: clientFull.phone,
+                gender: clientFull.gender,
+                heightCm: clientFull.height_cm,
+                weightKg: clientFull.weight_kg,
+                tokenBalance: clientFull.token_balance,
+                tokensIssued: clientFull.tokens_issued_total,
+                completedSlots: totals?.completed_slots ?? 0,
+            }
         }
-
-        setDetail({
-            ...row,
-            phone: clientFull.phone,
-            gender: clientFull.gender,
-            heightCm: clientFull.height_cm,
-            weightKg: clientFull.weight_kg,
-            tokenBalance: clientFull.token_balance,
-            tokensIssued: clientFull.tokens_issued_total,
-            completedSlots: totals?.completed_slots ?? 0,
-        })
-    }
+    )
 
     const columns: DataTableColumn<ClientRow>[] = [
         {
@@ -235,73 +234,60 @@ export default function AdminClients() {
                         {visible.length === 0 ? (
                             <EmptyState title="No clients" blurb="No client accounts match this filter yet." />
                         ) : (
-                            <DataTable columns={columns} rows={visible} rowKey={(c) => c.id} onRowClick={openDetail} />
+                            <DataTable columns={columns} rows={visible} rowKey={(c) => c.id} onRowClick={handleOpenDetail} />
                         )}
                     </>
                 )}
             </div>
 
             {/* Client detail dialog */}
-            <Dialog open={!!detail} onOpenChange={(open) => !open && setDetail(null)}>
-                <DialogContent className="!bg-[#111] !border-[#1f1f1f] !text-white sm:!max-w-lg max-h-[85vh] overflow-y-auto">
-                    {detail && (
-                        <>
-                            <DialogHeader>
-                                <div className="flex items-center gap-3.5">
-                                    <span className="w-11 h-11 rounded-2xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center font-semibold text-[14px] text-white/75 flex-none">
-                                        {initials(detail.name)}
-                                    </span>
-                                    <div className="min-w-0 flex-1">
-                                        <DialogTitle className="!text-white font-['Anton'] text-xl uppercase tracking-wide truncate">{detail.name}</DialogTitle>
-                                        <DialogDescription className="!text-white/45 truncate">{detail.email}</DialogDescription>
+            <DetailDialogShell
+                open={!!detail}
+                onClose={() => setDetail(null)}
+                loading={detailLoading}
+                avatarInitials={detail ? initials(detail.name) : ''}
+                title={detail?.name ?? ''}
+                description={detail?.email ?? ''}
+                statusPill={detail && <StatusPill {...deriveClientStatus(detail.coach)} />}
+            >
+                {detail && (
+                    <>
+                        <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
+                            <DetailRow align="right" icon={Mail} label="Email" value={detail.email} />
+                            <DetailRow align="right" icon={Phone} label="Phone" value={detail.phone ?? '—'} />
+                            <DetailRow align="right" icon={Target} label="Goal" value={goalLabel(detail.goal)} />
+                            <DetailRow align="right" icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
+                            <DetailRow align="right" icon={Ruler} label="Height" value={detail.heightCm != null ? `${detail.heightCm} cm` : '—'} />
+                            <DetailRow align="right" icon={Weight} label="Weight" value={detail.weightKg != null ? `${detail.weightKg} kg` : '—'} />
+                            <DetailRow align="right" icon={CalendarCheck2} label="Joined" value={formatDate(detail.joined, { day: 'numeric', month: 'short', year: 'numeric' })} />
+                            <DetailRow align="right" icon={CheckCircle2} label="Sessions completed" value={String(detail.completedSlots ?? 0)} tone="good" />
+                            <DetailRow align="right" icon={Coins} label="Token balance" value={`${detail.tokenBalance ?? 0} (${detail.tokensIssued ?? 0} issued total)`} tone={detail.tokenBalance ? 'good' : 'default'} />
+                        </div>
+
+                        <div className="bg-[#141414] border border-[#1f1f1f] rounded-[14px] px-[15px] py-3.5">
+                            <div className="flex items-center gap-2.5 text-[11.5px] text-white/50">
+                                <UserCog className="w-4 h-4 text-white/35 flex-none" />
+                                Linked coach
+                            </div>
+                            {!detail.coach ? (
+                                <div className="mt-2 text-[12px] text-white/35">Not linked to a coach.</div>
+                            ) : (
+                                <div className="mt-2.5 flex items-center justify-between gap-3">
+                                    <div className="min-w-0">
+                                        <div className="font-medium text-[13px] truncate">{detail.coach.name}</div>
+                                        <div className="mt-[2px] text-[11px] text-white/40">
+                                            {detail.coach.code ?? '—'}
+                                            {detail.linkedSince && ` · linked since ${formatDate(detail.linkedSince, { day: 'numeric', month: 'short', year: 'numeric' })}`}
+                                            {detail.coach.billing?.subscriptionExpiry && ` · billing expiry ${formatDate(detail.coach.billing.subscriptionExpiry, { day: 'numeric', month: 'short', year: 'numeric' })}`}
+                                        </div>
                                     </div>
                                     <StatusPill {...deriveClientStatus(detail.coach)} />
                                 </div>
-                            </DialogHeader>
-
-                            {detailLoading ? (
-                                <div className="flex items-center justify-center gap-2 py-10 text-white/40 text-[12.5px]"><Spinner className="w-4 h-4" /> Loading details...</div>
-                            ) : (
-                                <div className="flex flex-col gap-3.5">
-                                    <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
-                                        <DetailRow align="right" icon={Mail} label="Email" value={detail.email} />
-                                        <DetailRow align="right" icon={Phone} label="Phone" value={detail.phone ?? '—'} />
-                                        <DetailRow align="right" icon={Target} label="Goal" value={goalLabel(detail.goal)} />
-                                        <DetailRow align="right" icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
-                                        <DetailRow align="right" icon={Ruler} label="Height" value={detail.heightCm != null ? `${detail.heightCm} cm` : '—'} />
-                                        <DetailRow align="right" icon={Weight} label="Weight" value={detail.weightKg != null ? `${detail.weightKg} kg` : '—'} />
-                                        <DetailRow align="right" icon={CalendarCheck2} label="Joined" value={formatDate(detail.joined, { day: 'numeric', month: 'short', year: 'numeric' })} />
-                                        <DetailRow align="right" icon={CheckCircle2} label="Sessions completed" value={String(detail.completedSlots ?? 0)} tone="good" />
-                                        <DetailRow align="right" icon={Coins} label="Token balance" value={`${detail.tokenBalance ?? 0} (${detail.tokensIssued ?? 0} issued total)`} tone={detail.tokenBalance ? 'good' : 'default'} />
-                                    </div>
-
-                                    <div className="bg-[#141414] border border-[#1f1f1f] rounded-[14px] px-[15px] py-3.5">
-                                        <div className="flex items-center gap-2.5 text-[11.5px] text-white/50">
-                                            <UserCog className="w-4 h-4 text-white/35 flex-none" />
-                                            Linked coach
-                                        </div>
-                                        {!detail.coach ? (
-                                            <div className="mt-2 text-[12px] text-white/35">Not linked to a coach.</div>
-                                        ) : (
-                                            <div className="mt-2.5 flex items-center justify-between gap-3">
-                                                <div className="min-w-0">
-                                                    <div className="font-medium text-[13px] truncate">{detail.coach.name}</div>
-                                                    <div className="mt-[2px] text-[11px] text-white/40">
-                                                        {detail.coach.code ?? '—'}
-                                                        {detail.linkedSince && ` · linked since ${formatDate(detail.linkedSince, { day: 'numeric', month: 'short', year: 'numeric' })}`}
-                                                        {detail.coach.billing?.subscriptionExpiry && ` · billing expiry ${formatDate(detail.coach.billing.subscriptionExpiry, { day: 'numeric', month: 'short', year: 'numeric' })}`}
-                                                    </div>
-                                                </div>
-                                                <StatusPill {...deriveClientStatus(detail.coach)} />
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
                             )}
-                        </>
-                    )}
-                </DialogContent>
-            </Dialog>
+                        </div>
+                    </>
+                )}
+            </DetailDialogShell>
         </div>
     )
 }

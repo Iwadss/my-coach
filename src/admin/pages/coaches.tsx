@@ -8,9 +8,10 @@ import { EmptyState, FilterBar, FilterChip, SectionToolbar, StatusPill, formatDa
 import { GRACE_PERIOD_DAYS } from '@/shared/lib/billing'
 import { Ban, RotateCcw, Mail, Phone, User, Award, DollarSign, CalendarCheck2, CreditCard, Users } from 'lucide-react'
 import { Spinner } from '@/components/ui/spinner'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { DetailRow } from '@/shared/components/detail-row'
 import { useAdminExport } from '@/admin/components/use-admin-export'
+import { useDetailLoader } from '@/admin/components/use-detail-loader'
+import { DetailDialogShell } from '@/admin/components/detail-dialog-shell'
 
 type CoachAppStatus = 'pending' | 'approved' | 'rejected' | 'suspended'
 type Filter = 'All' | 'Active' | 'Needs attention'
@@ -82,8 +83,7 @@ export default function AdminCoaches() {
     const [filter, setFilter] = useState<Filter>('All')
     const [actingId, setActingId] = useState<string | null>(null)
 
-    const [detail, setDetail] = useState<CoachDetail | null>(null)
-    const [detailLoading, setDetailLoading] = useState(false)
+    const { detail, setDetail, detailLoading, openDetail } = useDetailLoader<CoachRow, CoachDetail>()
 
     const load = async () => {
         setLoading(true)
@@ -151,43 +151,42 @@ export default function AdminCoaches() {
         status: deriveStatus(c).label, joined: c.joined,
     }), 'coaches.csv')
 
-    const openDetail = async (row: CoachRow) => {
-        setDetail({ ...row, phone: null, bio: null, gender: null, specialty: null, hourlyRate: null, acceptingClients: true, appliedAt: row.joined, reviewedAt: null, rejectionReason: null, linkedClients: [] })
-        setDetailLoading(true)
+    const handleOpenDetail = (row: CoachRow) => openDetail(
+        row,
+        { phone: null, bio: null, gender: null, specialty: null, hourlyRate: null, acceptingClients: true, appliedAt: row.joined, reviewedAt: null, rejectionReason: null, linkedClients: [] },
+        async () => {
+            const [{ data: coachFull, error }, { data: clientRows }] = await Promise.all([
+                supabase.from('coaches').select('phone, bio, gender, specialty, hourly_rate, accepting_clients, applied_at, reviewed_at, rejection_reason').eq('id', row.id).maybeSingle(),
+                supabase
+                    .from('coach_clients')
+                    .select('client:clients!coach_clients_client_id_fkey(id, full_name, email)')
+                    .eq('coach_id', row.id)
+                    .eq('status', 'approved'),
+            ])
 
-        const [{ data: coachFull, error }, { data: clientRows }] = await Promise.all([
-            supabase.from('coaches').select('phone, bio, gender, specialty, hourly_rate, accepting_clients, applied_at, reviewed_at, rejection_reason').eq('id', row.id).maybeSingle(),
-            supabase
-                .from('coach_clients')
-                .select('client:clients!coach_clients_client_id_fkey(id, full_name, email)')
-                .eq('coach_id', row.id)
-                .eq('status', 'approved'),
-        ])
+            if (error || !coachFull) {
+                toast.error('❌ Could not load coach details', { description: error?.message, className: 'toast-error' })
+                return null
+            }
 
-        setDetailLoading(false)
-        if (error || !coachFull) {
-            toast.error('❌ Could not load coach details', { description: error?.message, className: 'toast-error' })
-            return
+            const clients = ((clientRows ?? []) as unknown as { client: { id: string; full_name: string | null; email: string } | null }[])
+                .filter((r) => r.client !== null)
+                .map((r) => ({ id: r.client!.id, name: r.client!.full_name || r.client!.email, email: r.client!.email }))
+
+            return {
+                phone: coachFull.phone,
+                bio: coachFull.bio,
+                gender: coachFull.gender,
+                specialty: coachFull.specialty,
+                hourlyRate: coachFull.hourly_rate,
+                acceptingClients: coachFull.accepting_clients,
+                appliedAt: coachFull.applied_at,
+                reviewedAt: coachFull.reviewed_at,
+                rejectionReason: coachFull.rejection_reason,
+                linkedClients: clients,
+            }
         }
-
-        const clients = ((clientRows ?? []) as unknown as { client: { id: string; full_name: string | null; email: string } | null }[])
-            .filter((r) => r.client !== null)
-            .map((r) => ({ id: r.client!.id, name: r.client!.full_name || r.client!.email, email: r.client!.email }))
-
-        setDetail({
-            ...row,
-            phone: coachFull.phone,
-            bio: coachFull.bio,
-            gender: coachFull.gender,
-            specialty: coachFull.specialty,
-            hourlyRate: coachFull.hourly_rate,
-            acceptingClients: coachFull.accepting_clients,
-            appliedAt: coachFull.applied_at,
-            reviewedAt: coachFull.reviewed_at,
-            rejectionReason: coachFull.rejection_reason,
-            linkedClients: clients,
-        })
-    }
+    )
 
     // Ban/unban for policy violations — coaches.status, via
     // admin_set_coach_status(). This also demotes profiles.role away from
@@ -251,102 +250,89 @@ export default function AdminCoaches() {
                         {visible.length === 0 ? (
                             <EmptyState title="No coaches" blurb="No coach accounts match this filter yet." />
                         ) : (
-                            <DataTable columns={columns} rows={visible} rowKey={(c) => c.id} onRowClick={openDetail} />
+                            <DataTable columns={columns} rows={visible} rowKey={(c) => c.id} onRowClick={handleOpenDetail} />
                         )}
                     </>
                 )}
             </div>
 
             {/* Coach detail dialog */}
-            <Dialog open={!!detail} onOpenChange={(open) => !open && setDetail(null)}>
-                <DialogContent className="!bg-[#111] !border-[#1f1f1f] !text-white sm:!max-w-lg max-h-[85vh] overflow-y-auto">
-                    {detail && (
-                        <>
-                            <DialogHeader>
-                                <div className="flex items-center gap-3.5">
-                                    <span className="w-11 h-11 rounded-2xl bg-[#1a1a1a] border border-[#2a2a2a] flex items-center justify-center font-semibold text-[14px] text-white/75 flex-none">
-                                        {initials(detail.name)}
-                                    </span>
-                                    <div className="min-w-0 flex-1">
-                                        <DialogTitle className="!text-white font-['Anton'] text-xl uppercase tracking-wide truncate">{detail.name}</DialogTitle>
-                                        <DialogDescription className="!text-white/45 truncate">{detail.email}{detail.coachCode ? ` · ${detail.coachCode}` : ''}</DialogDescription>
-                                    </div>
-                                    <StatusPill {...deriveStatus(detail)} />
-                                </div>
-                            </DialogHeader>
+            <DetailDialogShell
+                open={!!detail}
+                onClose={() => setDetail(null)}
+                loading={detailLoading}
+                avatarInitials={detail ? initials(detail.name) : ''}
+                title={detail?.name ?? ''}
+                description={detail ? `${detail.email}${detail.coachCode ? ` · ${detail.coachCode}` : ''}` : ''}
+                statusPill={detail && <StatusPill {...deriveStatus(detail)} />}
+            >
+                {detail && (
+                    <>
+                        <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
+                            <DetailRow align="right" icon={Mail} label="Email" value={detail.email} />
+                            <DetailRow align="right" icon={Phone} label="Phone" value={detail.phone ?? '—'} />
+                            <DetailRow align="right" icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
+                            <DetailRow align="right" icon={Award} label="Specialty" value={detail.specialty ?? '—'} />
+                            <DetailRow align="right" icon={DollarSign} label="Hourly rate" value={detail.hourlyRate != null ? `RM${detail.hourlyRate}` : 'Not set'} />
+                            <DetailRow align="right" icon={CalendarCheck2} label="Applied" value={formatDate(detail.appliedAt, { day: 'numeric', month: 'short', year: 'numeric' })} />
+                            <DetailRow align="right" icon={CalendarCheck2} label="Reviewed" value={detail.reviewedAt ? formatDate(detail.reviewedAt, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
+                            {detail.rejectionReason && <DetailRow align="right" icon={Ban} label="Rejection reason" value={detail.rejectionReason} tone="bad" />}
+                        </div>
 
-                            {detailLoading ? (
-                                <div className="flex items-center justify-center gap-2 py-10 text-white/40 text-[12.5px]"><Spinner className="w-4 h-4" /> Loading details...</div>
+                        <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
+                            <DetailRow align="right" icon={CreditCard} label="Subscription" value={detail.billing ? (detail.billing.subscriptionStatus === 'active' ? 'Active' : 'Inactive') : '—'} />
+                            <DetailRow align="right" icon={CalendarCheck2} label="Expiry" value={detail.billing?.subscriptionExpiry ? formatDate(detail.billing.subscriptionExpiry, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
+                            <DetailRow align="right" icon={CalendarCheck2} label="Last payment" value={detail.billing?.lastPaymentAt ? formatDate(detail.billing.lastPaymentAt, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Never'} />
+                            {detail.billing?.accessOverride !== 'none' && (
+                                <DetailRow align="right" icon={Ban} label="Billing override" value={`${detail.billing?.accessOverride}${detail.billing?.overrideReason ? ` — ${detail.billing.overrideReason}` : ''}`} tone="bad" />
+                            )}
+                        </div>
+
+                        <div className="bg-[#141414] border border-[#1f1f1f] rounded-[14px] px-[15px] py-3.5">
+                            <div className="flex items-center gap-2.5 text-[11.5px] text-white/50">
+                                <Users className="w-4 h-4 text-white/35 flex-none" />
+                                Linked clients ({detail.linkedClients.length})
+                            </div>
+                            {detail.linkedClients.length === 0 ? (
+                                <div className="mt-2 text-[12px] text-white/35">No clients linked yet.</div>
                             ) : (
-                                <div className="flex flex-col gap-3.5">
-                                    <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
-                                        <DetailRow align="right" icon={Mail} label="Email" value={detail.email} />
-                                        <DetailRow align="right" icon={Phone} label="Phone" value={detail.phone ?? '—'} />
-                                        <DetailRow align="right" icon={User} label="Gender" value={detail.gender ? detail.gender.replace('_', ' ') : '—'} capitalize />
-                                        <DetailRow align="right" icon={Award} label="Specialty" value={detail.specialty ?? '—'} />
-                                        <DetailRow align="right" icon={DollarSign} label="Hourly rate" value={detail.hourlyRate != null ? `RM${detail.hourlyRate}` : 'Not set'} />
-                                        <DetailRow align="right" icon={CalendarCheck2} label="Applied" value={formatDate(detail.appliedAt, { day: 'numeric', month: 'short', year: 'numeric' })} />
-                                        <DetailRow align="right" icon={CalendarCheck2} label="Reviewed" value={detail.reviewedAt ? formatDate(detail.reviewedAt, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
-                                        {detail.rejectionReason && <DetailRow align="right" icon={Ban} label="Rejection reason" value={detail.rejectionReason} tone="bad" />}
-                                    </div>
-
-                                    <div className="flex flex-col gap-px bg-[#1f1f1f] border border-[#1f1f1f] rounded-[14px] overflow-hidden">
-                                        <DetailRow align="right" icon={CreditCard} label="Subscription" value={detail.billing ? (detail.billing.subscriptionStatus === 'active' ? 'Active' : 'Inactive') : '—'} />
-                                        <DetailRow align="right" icon={CalendarCheck2} label="Expiry" value={detail.billing?.subscriptionExpiry ? formatDate(detail.billing.subscriptionExpiry, { day: 'numeric', month: 'short', year: 'numeric' }) : '—'} />
-                                        <DetailRow align="right" icon={CalendarCheck2} label="Last payment" value={detail.billing?.lastPaymentAt ? formatDate(detail.billing.lastPaymentAt, { day: 'numeric', month: 'short', year: 'numeric' }) : 'Never'} />
-                                        {detail.billing?.accessOverride !== 'none' && (
-                                            <DetailRow align="right" icon={Ban} label="Billing override" value={`${detail.billing?.accessOverride}${detail.billing?.overrideReason ? ` — ${detail.billing.overrideReason}` : ''}`} tone="bad" />
-                                        )}
-                                    </div>
-
-                                    <div className="bg-[#141414] border border-[#1f1f1f] rounded-[14px] px-[15px] py-3.5">
-                                        <div className="flex items-center gap-2.5 text-[11.5px] text-white/50">
-                                            <Users className="w-4 h-4 text-white/35 flex-none" />
-                                            Linked clients ({detail.linkedClients.length})
+                                <div className="mt-2.5 flex flex-col gap-1.5">
+                                    {detail.linkedClients.map((cl) => (
+                                        <div key={cl.id} className="flex items-center justify-between gap-2 text-[12.5px]">
+                                            <span className="font-medium truncate">{cl.name}</span>
+                                            <span className="text-white/40 truncate">{cl.email}</span>
                                         </div>
-                                        {detail.linkedClients.length === 0 ? (
-                                            <div className="mt-2 text-[12px] text-white/35">No clients linked yet.</div>
-                                        ) : (
-                                            <div className="mt-2.5 flex flex-col gap-1.5">
-                                                {detail.linkedClients.map((cl) => (
-                                                    <div key={cl.id} className="flex items-center justify-between gap-2 text-[12.5px]">
-                                                        <span className="font-medium truncate">{cl.name}</span>
-                                                        <span className="text-white/40 truncate">{cl.email}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Policy ban — separate from billing; suspending here also revokes the coach role platform-wide (admin_set_coach_status). */}
-                                    <div className="flex gap-2">
-                                        {detail.status === 'approved' && (
-                                            <button
-                                                type="button"
-                                                disabled={actingId === detail.id}
-                                                onClick={() => setStatus(detail.id, 'suspended')}
-                                                className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 font-semibold text-[12.5px] text-[#ff6b52] border border-[rgba(255,107,82,.4)] hover:bg-[rgba(255,107,82,.1)] transition-colors disabled:opacity-50"
-                                            >
-                                                <Ban className="w-3.5 h-3.5" /> Suspend coach
-                                            </button>
-                                        )}
-                                        {detail.status === 'suspended' && (
-                                            <button
-                                                type="button"
-                                                disabled={actingId === detail.id}
-                                                onClick={() => setStatus(detail.id, 'approved')}
-                                                className="flex-1 inline-flex items-center justify-center gap-1.5 bg-[#ccff00] text-[#0a0a0a] rounded-full py-2.5 font-semibold text-[12.5px] hover:bg-[#e2ff5c] transition-colors disabled:opacity-50"
-                                            >
-                                                <RotateCcw className="w-3.5 h-3.5" /> Reactivate coach
-                                            </button>
-                                        )}
-                                    </div>
+                                    ))}
                                 </div>
                             )}
-                        </>
-                    )}
-                </DialogContent>
-            </Dialog>
+                        </div>
+
+                        {/* Policy ban — separate from billing; suspending here also revokes the coach role platform-wide (admin_set_coach_status). */}
+                        <div className="flex gap-2">
+                            {detail.status === 'approved' && (
+                                <button
+                                    type="button"
+                                    disabled={actingId === detail.id}
+                                    onClick={() => setStatus(detail.id, 'suspended')}
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 rounded-full py-2.5 font-semibold text-[12.5px] text-[#ff6b52] border border-[rgba(255,107,82,.4)] hover:bg-[rgba(255,107,82,.1)] transition-colors disabled:opacity-50"
+                                >
+                                    <Ban className="w-3.5 h-3.5" /> Suspend coach
+                                </button>
+                            )}
+                            {detail.status === 'suspended' && (
+                                <button
+                                    type="button"
+                                    disabled={actingId === detail.id}
+                                    onClick={() => setStatus(detail.id, 'approved')}
+                                    className="flex-1 inline-flex items-center justify-center gap-1.5 bg-[#ccff00] text-[#0a0a0a] rounded-full py-2.5 font-semibold text-[12.5px] hover:bg-[#e2ff5c] transition-colors disabled:opacity-50"
+                                >
+                                    <RotateCcw className="w-3.5 h-3.5" /> Reactivate coach
+                                </button>
+                            )}
+                        </div>
+                    </>
+                )}
+            </DetailDialogShell>
         </div>
     )
 }
