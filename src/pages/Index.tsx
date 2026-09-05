@@ -1,20 +1,25 @@
 
-import { useTheme } from '@/components/theme-provider';
-import Header from '../components/Header';
 import Hero from '../components/Hero';
-import About from '../components/About';
-import Skills from '../components/Skills';
+import Stats from '../components/Stats';
+import HowItWorks from '../components/HowItWorks';
+import WhyMyCoach from '../components/WhyMyCoach';
+import Programs from '../components/Programs';
+import Coaches from '../components/Coaches';
+import Results from '../components/Results';
+import RegisterCoachCta from '../components/RegisterCoachCta';
 import Footer from '../components/Footer';
 
 const Index = () => {
-    const { theme } = useTheme();
-
     return (
-        <div className={`min-h-screen ${theme === 'dark' ? 'bg-gradient-to-b from-gray-900 to-black text-white' : 'bg-gradient-to-b from-slate-50 to-white'}`}>
-            <Header />
+        <div className="min-h-screen bg-white dark:bg-[#0a0a0a]">
             <Hero />
-            <About />
-            <Skills />
+            <Stats />
+            <HowItWorks />
+            <WhyMyCoach />
+            <Programs />
+            <Coaches />
+            <Results />
+            <RegisterCoachCta />
             <Footer />
         </div>
     );

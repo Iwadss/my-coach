@@ -6,24 +6,35 @@ interface Props {
     children: ReactNode;
 }
 
+type Verdict = 'checking' | 'ok' | 'no-session' | 'not-admin';
+
 export default function AdminRoute({ children }: Props) {
-    const [loading, setLoading] = useState(true);
-    const [isAdmin, setIsAdmin] = useState(false);
-    const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+    const [verdict, setVerdict] = useState<Verdict>('checking');
 
     useEffect(() => {
-        const checkSession = async () => {
+        const check = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user.email === adminEmail) {
-                setIsAdmin(true);
+            if (!session) {
+                setVerdict('no-session');
+                return;
             }
-            setLoading(false);
+
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('role')
+                .eq('id', session.user.id)
+                .maybeSingle();
+
+            setVerdict(profile?.role === 'admin' ? 'ok' : 'not-admin');
         };
-        checkSession();
+        check();
     }, []);
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-    if (!isAdmin) return <Navigate to="/client-dashboard" replace />;
+    if (verdict === 'checking') {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    }
+    if (verdict === 'no-session') return <Navigate to="/login" replace />;
+    if (verdict === 'not-admin') return <Navigate to="/pending-approval" replace />;
 
     return <>{children}</>;
 }
