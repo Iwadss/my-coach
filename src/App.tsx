@@ -21,9 +21,9 @@ import ClientSettings from "./pages/client/ClientSettings";
 import NotFound from "./pages/NotFound";
 
 // Route protection components
-import ProtectedRoute from "@/components/ProtectedRoute";
-import CoachRoute from "@/components/CoachRoute";
-import AdminRoute from "@/components/AdminRoute";
+import ClientRoute from "@/auth/guards/client-route";
+import CoachRoute from "@/auth/guards/coach-route";
+import AdminRoute from "@/auth/guards/admin-route";
 import TimeSlots from "./components/coach/time-slot-management";
 import ClientManagement from "./components/coach/client-management";
 import RegisterClient from "./components/coach/client-registration";
@@ -57,41 +57,41 @@ const App = () => (
           <Route
             path="/client-dashboard"
             element={
-              <ProtectedRoute>
+              <ClientRoute>
                 <ClientDashboard />
-              </ProtectedRoute>
+              </ClientRoute>
             }
           />
           <Route
             path="/client-book"
             element={
-              <ProtectedRoute>
+              <ClientRoute>
                 <ClientBook />
-              </ProtectedRoute>
+              </ClientRoute>
             }
           />
           <Route
             path="/client-sessions"
             element={
-              <ProtectedRoute>
+              <ClientRoute>
                 <ClientSessions />
-              </ProtectedRoute>
+              </ClientRoute>
             }
           />
           <Route
             path="/client-progress"
             element={
-              <ProtectedRoute>
+              <ClientRoute>
                 <ClientProgress />
-              </ProtectedRoute>
+              </ClientRoute>
             }
           />
           <Route
             path="/client-settings"
             element={
-              <ProtectedRoute>
+              <ClientRoute>
                 <ClientSettings />
-              </ProtectedRoute>
+              </ClientRoute>
             }
           />
 

@@ -14,7 +14,7 @@ type Verdict = 'checking' | 'ok' | 'no-session' | 'not-approved-client';
  * (still pending, rejected, or a coach/admin who wandered here) is sent to
  * /pending-approval, which resolves the right next step for them.
  */
-export default function ProtectedRoute({ children }: Props) {
+export default function ClientRoute({ children }: Props) {
     const [verdict, setVerdict] = useState<Verdict>('checking');
 
     useEffect(() => {
