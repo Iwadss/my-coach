@@ -18,13 +18,15 @@
 // Wrapped in <ClientAuthGuard> — blocks the screen if the client's linked
 // coach is expired/suspended — so every client page gets it automatically.
 import * as React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import supabase from '@/supabase/supabase'
 import { LOGO_SRC } from '@/shared/lib/brand'
 import { initials } from '@/components/shared/ui'
 import PageHeader from '@/components/shared/page-header'
 import ClientAuthGuard from '@/client/components/client-auth-guard'
+import { PortalNavItem } from '@/shared/components/portal-nav-item'
+import { PortalSelfCard } from '@/shared/components/portal-self-card'
 import {
     Home,
     CalendarPlus,
@@ -42,11 +44,8 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuBadge,
-    SidebarMenuButton,
-    SidebarMenuItem,
     SidebarProvider,
     SidebarTrigger,
-    useSidebar,
 } from '@/components/ui/sidebar'
 
 // Re-exported (imported above) so existing `import ClientShell, { initials }
@@ -80,67 +79,6 @@ interface ClientShellProps {
     title: string
     blurb?: string
     children: React.ReactNode
-}
-
-// Each nav row closes the mobile sheet on click — needs useSidebar(), which
-// only works below <SidebarProvider>, hence its own component rather than
-// inline JSX in ClientShell.
-function NavItem({ item, active, badge }: { item: (typeof navItems)[number]; active: Tab; badge: number | null }) {
-    const { setOpenMobile } = useSidebar()
-    const isActive = active === item.tab
-
-    return (
-        <SidebarMenuItem>
-            <SidebarMenuButton
-                asChild
-                isActive={isActive}
-                className={`h-auto rounded-[13px] px-3 py-3 font-medium text-[13.5px] ${isActive ? 'text-[#6f8c00] dark:text-[#ccff00]' : 'text-[#14140f]/62 dark:text-white/62'}`}
-            >
-                <NavLink to={item.to} onClick={() => setOpenMobile(false)}>
-                    <item.icon className="w-[17px] h-[17px]" strokeWidth={1.8} />
-                    <span>{item.label}</span>
-                </NavLink>
-            </SidebarMenuButton>
-            {item.tab === 'sessions' && badge !== null && badge > 0 && (
-                <SidebarMenuBadge className="font-['JetBrains_Mono'] text-[11px] text-[#14140f]/35 dark:text-white/35">{badge}</SidebarMenuBadge>
-            )}
-        </SidebarMenuItem>
-    )
-}
-
-// The sidebar has no "Settings" nav item — clicking your own profile card
-// here is how you get to /client-settings instead.
-function SelfCard({ self }: { self: SelfInfo | null }) {
-    const navigate = useNavigate()
-    const { setOpenMobile } = useSidebar()
-
-    const goToSettings = () => {
-        setOpenMobile(false)
-        navigate('/client-settings')
-    }
-
-    return (
-        <div
-            role="button"
-            tabIndex={0}
-            onClick={goToSettings}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    goToSettings()
-                }
-            }}
-            className="text-left w-full flex items-center gap-[11px] bg-[#ececdf] dark:bg-[#141414] border border-[#e2e2d9] dark:border-[#232323] rounded-2xl px-[13px] py-3 cursor-pointer hover:border-[#ccff00]/40 transition-colors"
-        >
-            <span className="w-[34px] h-[34px] rounded-[11px] bg-[#ccff00] text-[#0a0a0a] flex items-center justify-center font-semibold text-xs flex-none">
-                {self ? initials(self.name) : '··'}
-            </span>
-            <span className="flex flex-col min-w-0">
-                <span className="font-medium text-[12.5px] truncate">{self?.name ?? 'Loading…'}</span>
-                <span className="text-[11px] text-[#14140f]/42 dark:text-white/42 truncate capitalize">{self?.goal ?? 'No goal set'}</span>
-            </span>
-        </div>
-    )
 }
 
 export default function ClientShell({ active, kicker, title, blurb, children }: ClientShellProps) {
@@ -210,7 +148,17 @@ export default function ClientShell({ active, kicker, title, blurb, children }: 
                             <SidebarGroupContent>
                                 <SidebarMenu className="gap-1">
                                     {navItems.map((item) => (
-                                        <NavItem key={item.to} item={item} active={active} badge={upcomingCount} />
+                                        <PortalNavItem
+                                            key={item.to}
+                                            to={item.to}
+                                            label={item.label}
+                                            icon={item.icon}
+                                            isActive={active === item.tab}
+                                            theme="client"
+                                            badge={item.tab === 'sessions' && upcomingCount !== null && upcomingCount > 0 && (
+                                                <SidebarMenuBadge className="font-['JetBrains_Mono'] text-[11px] text-[#14140f]/35 dark:text-white/35">{upcomingCount}</SidebarMenuBadge>
+                                            )}
+                                        />
                                     ))}
                                 </SidebarMenu>
                             </SidebarGroupContent>
@@ -218,7 +166,13 @@ export default function ClientShell({ active, kicker, title, blurb, children }: 
                     </SidebarContent>
 
                     <SidebarFooter className="px-[18px] pb-[22px] gap-3">
-                        <SelfCard self={self} />
+                        <PortalSelfCard
+                            name={self?.name ?? null}
+                            subtitle={self?.goal ?? 'No goal set'}
+                            capitalizeSubtitle
+                            onClick={() => navigate('/client-settings')}
+                            theme="client"
+                        />
                         <button
                             type="button"
                             onClick={handleSignOut}

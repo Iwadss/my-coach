@@ -20,7 +20,7 @@
 // Wrapped in <CoachAuthGuard> — the global payment gate — so every coach
 // page gets the expired-subscription blocking modal automatically.
 import * as React from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { format } from 'date-fns'
 import { toast } from 'sonner'
 import supabase from '@/supabase/supabase'
@@ -29,6 +29,8 @@ import { initials } from '@/components/shared/ui'
 import PageHeader from '@/components/shared/page-header'
 import CoachAuthGuard from '@/coach/components/coach-auth-guard'
 import CoachSubscriptionBanner from '@/coach/components/coach-subscription-banner'
+import { PortalNavItem } from '@/shared/components/portal-nav-item'
+import { PortalSelfCard } from '@/shared/components/portal-self-card'
 import {
     Home,
     CalendarRange,
@@ -47,11 +49,8 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuBadge,
-    SidebarMenuButton,
-    SidebarMenuItem,
     SidebarProvider,
     SidebarTrigger,
-    useSidebar,
 } from '@/components/ui/sidebar'
 
 // Re-exported (imported above) so existing `import CoachShell, { initials }
@@ -92,67 +91,6 @@ interface CoachShellProps {
      * a phone. */
     showDate?: boolean
     children: React.ReactNode
-}
-
-// Each nav row closes the mobile sheet on click — needs useSidebar(), which
-// only works below <SidebarProvider>, hence its own component rather than
-// inline JSX in CoachShell.
-function NavItem({ item, active, badge }: { item: (typeof navItems)[number]; active: Tab; badge: number | null }) {
-    const { setOpenMobile } = useSidebar()
-    const isActive = active === item.tab
-
-    return (
-        <SidebarMenuItem>
-            <SidebarMenuButton
-                asChild
-                isActive={isActive}
-                className={`h-auto rounded-[13px] px-3 py-3 font-medium text-[13.5px] ${isActive ? 'text-[#ccff00]' : 'text-white/62'}`}
-            >
-                <NavLink to={item.to} onClick={() => setOpenMobile(false)}>
-                    <item.icon className="w-[17px] h-[17px]" strokeWidth={1.8} />
-                    <span>{item.label}</span>
-                </NavLink>
-            </SidebarMenuButton>
-            {item.tab === 'requests' && !!badge && (
-                <SidebarMenuBadge className="font-['JetBrains_Mono'] text-[10.5px] font-medium bg-[#ccff00] text-[#0a0a0a] rounded-full px-[7px] py-[2px]">{badge}</SidebarMenuBadge>
-            )}
-        </SidebarMenuItem>
-    )
-}
-
-// The sidebar has no "Settings" nav item — clicking your own profile card
-// here is how you get to /coach-settings instead.
-function SelfCard({ self }: { self: Self | null }) {
-    const navigate = useNavigate()
-    const { setOpenMobile } = useSidebar()
-
-    const goToSettings = () => {
-        setOpenMobile(false)
-        navigate('/coach-settings')
-    }
-
-    return (
-        <div
-            role="button"
-            tabIndex={0}
-            onClick={goToSettings}
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    goToSettings()
-                }
-            }}
-            className="text-left w-full flex items-center gap-[11px] bg-[#141414] border border-[#232323] rounded-2xl px-[13px] py-3 cursor-pointer hover:border-[#ccff00]/40 transition-colors"
-        >
-            <span className="w-[34px] h-[34px] rounded-[11px] bg-[#ccff00] text-[#0a0a0a] flex items-center justify-center font-semibold text-xs flex-none">
-                {self ? initials(self.name) : '··'}
-            </span>
-            <span className="flex flex-col min-w-0">
-                <span className="font-medium text-[12.5px] truncate">{self?.name ?? 'Loading…'}</span>
-                <span className="text-[11px] text-white/42 truncate">{self ? `${self.activeClients} active client${self.activeClients === 1 ? '' : 's'}` : ''}</span>
-            </span>
-        </div>
-    )
 }
 
 export default function CoachShell({ active, kicker, title, blurb, showDate = true, children }: CoachShellProps) {
@@ -229,7 +167,17 @@ export default function CoachShell({ active, kicker, title, blurb, showDate = tr
                             <SidebarGroupContent>
                                 <SidebarMenu className="gap-1">
                                     {navItems.map((item) => (
-                                        <NavItem key={item.to} item={item} active={active} badge={pendingCount} />
+                                        <PortalNavItem
+                                            key={item.to}
+                                            to={item.to}
+                                            label={item.label}
+                                            icon={item.icon}
+                                            isActive={active === item.tab}
+                                            theme="coach"
+                                            badge={item.tab === 'requests' && !!pendingCount && (
+                                                <SidebarMenuBadge className="font-['JetBrains_Mono'] text-[10.5px] font-medium bg-[#ccff00] text-[#0a0a0a] rounded-full px-[7px] py-[2px]">{pendingCount}</SidebarMenuBadge>
+                                            )}
+                                        />
                                     ))}
                                 </SidebarMenu>
                             </SidebarGroupContent>
@@ -253,7 +201,12 @@ export default function CoachShell({ active, kicker, title, blurb, showDate = tr
                     </SidebarContent>
 
                     <SidebarFooter className="px-[18px] pb-[22px] gap-3">
-                        <SelfCard self={self} />
+                        <PortalSelfCard
+                            name={self?.name ?? null}
+                            subtitle={self ? `${self.activeClients} active client${self.activeClients === 1 ? '' : 's'}` : ''}
+                            onClick={() => navigate('/coach-settings')}
+                            theme="coach"
+                        />
                         <button
                             type="button"
                             onClick={handleSignOut}
