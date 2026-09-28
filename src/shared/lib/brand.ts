@@ -7,4 +7,4 @@
 // raster format — just update the extension below to match), or point
 // LOGO_SRC at a different path/URL entirely. Every nav bar picks it up
 // automatically.
-export const LOGO_SRC = '/logo.svg'
+export const LOGO_SRC = import.meta.env.BASE_URL + 'logo.svg'

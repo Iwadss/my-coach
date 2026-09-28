@@ -176,7 +176,7 @@ export default function AdminLayout() {
     }
 
     const handleInvite = async () => {
-        const link = `${window.location.origin}/coach-signup`
+        const link = `${window.location.origin}${import.meta.env.BASE_URL}coach-signup`
         try {
             await navigator.clipboard.writeText(link)
             toast.success('🔗 Sign-up link copied', { description: 'Share it with the coach you want to invite — their application lands in your review queue.', className: 'toast-success' })

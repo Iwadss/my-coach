@@ -55,7 +55,7 @@ export default function ClientAuthGuard({ children }: { children: ReactNode }) {
         // anyway, so send them there now instead of leaving them on a
         // dashboard that's about to be stale. Full navigation (not
         // react-router) so every bit of this shell's own state resets clean.
-        window.location.assign('/pending-approval')
+        window.location.assign(import.meta.env.BASE_URL + 'pending-approval')
     }
 
     if (state !== 'blocked') {

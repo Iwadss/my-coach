@@ -26,7 +26,7 @@ export default function ForgotPassword() {
         setLoading(true)
 
         await supabase.auth.resetPasswordForEmail(email, {
-            redirectTo: `${window.location.origin}/reset-password`,
+            redirectTo: `${window.location.origin}${import.meta.env.BASE_URL}reset-password`,
         })
 
         // Always show the same outcome, whether or not the email exists —

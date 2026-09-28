@@ -40,7 +40,7 @@ const App = () => (
   <TooltipProvider>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <Sonner />
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Home />} />
